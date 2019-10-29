@@ -46,7 +46,7 @@ pseudo (grafo, densidade_alvo)
 
     para i<len(grafo)-1;i++
     {
-        switch(i)
+        switch(i) ///// 1238123u812u831289893
         case: 0
         grafo[i].push_in_front(vertice[value=i+1])
         ligacoes++;
