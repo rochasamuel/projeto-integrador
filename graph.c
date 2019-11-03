@@ -5,6 +5,16 @@
 
 // Creating a graph with N nodes
 
+typedef struct G graph;
+
+struct G{
+    int n_vertices;
+    int n_arestas;
+    linked_list 
+}
+
+
+
 int fill_graph(linked_list *graph, int n_vertices)
 {
     int i;
@@ -34,30 +44,29 @@ void main(void)
 
 
 
-pseudo (grafo, densidade_alvo)
+int fill_graph(linked_list *graph, float densidade)
 {
-    max_lig = ((len(grafo)**2)/2);
-    min_lig = len(grafo) - 1;
+    float max_v = (grafo->v)*(grafo->v - 1);
+    densidade_atual = grafo->n_vertices/max_v;
 
-    int ligacoes;
-
-    densidade_atual = ligacoes/max_lig;
-
-
-    para i<len(grafo)-1;i++
+    int i;
+    // Início do grafo, condição mínima de existência
+    for(i=0; i<grafo->n_vertices-1; i++)
     {
-        switch(i) ///// 1238123u812u831289893
-        case: 0
-        grafo[i].push_in_front(vertice[value=i+1])
-        ligacoes++;
-        case: final
-        grafo[i].push_in_front(vertice[value=i-1])
-        ligacoes++;
-        default: 
-        grafo[i].push_in_front(vertice[value=i+1])
-        ligacoes++;
-        grafo[i].push_in_front(vertice[value=i-1])
-        ligacoes++;
+        switch(i)
+        {
+            case 0:
+                grafo->ad_list[i].push_in_front(vertice[value=i+1])
+                ligacoes++;
+            case grafo->n_vertices-1:
+                grafo->ad_list[i].push_in_front(vertice[value=i-1])
+                ligacoes++;
+            default: 
+                grafo->ad_list[i].push_in_front(vertice[value=i+1])
+                ligacoes++;
+                grafo->ad_list[i].push_in_front(vertice[value=i-1])
+                ligacoes++;
+        }
     }
 
     if(densidade_alvo == 0)

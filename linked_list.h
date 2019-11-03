@@ -3,10 +3,10 @@
 
 
 //pre-typedef'ing a pointer to a node as link
-typedef struct node *vertice;
+typedef struct list_item *vertice;
 
 //Defining a node
-struct node{
+struct list_item{
     int label;
     int value;
     int weight;
@@ -16,11 +16,12 @@ struct node{
 
 
 // pre-typedef'ing a pointer to a linked-list as header
-typedef struct header *linked_list;
+typedef struct linked_list *adjacents;
 
 // Defining a linked-list header
-struct header{
+struct linked_list{
     int len;
+    int label;
     vertice start;
     vertice end;
 };
@@ -28,10 +29,11 @@ struct header{
 
 // On to the functions
 
-linked_list create_list(void)
+adjacents create_list(void)
 {
-    linked_list L = malloc(sizeof(*L));
+    adjacents L = malloc(sizeof(*L));
     L->len = 0;
+    l->label = 0;
     L->start = NULL;
     L->end = NULL;
     return L;
@@ -42,10 +44,13 @@ vertice create_item(void)
     vertice new_item = malloc(sizeof(*new_item));
     new_item->next = NULL;
     new_item->previous = NULL;
+    new_item->label = 0;
+    new_item->value = 0;
+    new_item->weight = 0;
     return new_item;
 }
 
-void show_list(linked_list L)
+void show_adjacents(adjacents L)
 {
     printf("L: -");
     vertice current = create_item();
@@ -56,12 +61,13 @@ void show_list(linked_list L)
     printf("\n");
 }
 
-int delete_from_list(int target, linked_list L)
+int remove_adjacent(int target_label, adjacents L)
 {
     vertice current = create_item();
     // Traversing the list
     if(L->start->value == target)
     {
+        // In case target value is fist on the list
         vertice temp = create_item();
         temp = L->start;
         L->start = temp->next;
@@ -87,44 +93,24 @@ int delete_from_list(int target, linked_list L)
     return 0;
 }
 
-int push_at(int new_value, int at, linked_list L)
-{
-    if(at > L->len)
-    {
-        printf("List ain't that long");
-        return 0;
-    }
-    int i;
-    vertice new_item = create_item();
-    new_item->value = new_value;
-    vertice target_item = L->start;
-    for(i = 0; i < at; i++)
-    {
-        target_item = target_item->next;
-    }
-    new_item->next = target_item->next->next;
-    target_item->next = new_item;
-    L->len++;
-    show_list(L);
-    return 0;
-}
-
-int push_at_start(int new_value, linked_list L)
+int add_adjacent(int new_label, int new_value, int new_weight, adjacents L)
 {
     int i;
     vertice new_item = create_item();
     new_item->value = new_value;
+    new_item->label = new_label;
+    new_item->weight = new_weight;
     new_item->next = L->start;
+    new_item->previous = NULL;
     L->start = new_item;
-    show_list(L);
     return 0;
 }
 
-int contains(int x, linked_list L)
+int is_adjacent_to(int label, adjacents L)
 {
     for(current = L->start; current != NULL; current = current->next)
     {
-        if(current->value == x) return 1;
+        if(current->label == label) return 1;
     }
     return 0;
 }
