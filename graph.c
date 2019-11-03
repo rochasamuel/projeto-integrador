@@ -5,51 +5,26 @@
 
 // Creating a graph with N nodes
 
-typedef struct G graph;
+typedef struct graph_structure graph;
 
-struct G{
+struct graph_structure{
     int n_vertices;
-    int n_arestas;
-    linked_list 
-}
+    int n_links;
+    adjacents adjacency_list[]; 
+};
 
-
-
-int fill_graph(linked_list *graph, int n_vertices)
+int create_graph(int n_vertices, float density)
 {
     int i;
-    for(i = 0;i<n_vertices;i++)
+    graph g = malloc(sizeof(*g));
+    g->n_vertices = n_vertices;
+    g->n_links = 0;
+    g->adjacency_list = create_list();
+    
+    for(i=0; i<n_vertices; i++)
     {
-        int j;
-        for(j = 0; j < 3; j++)
-        {
-            push_at_start(1 + rand() % 20, graph[i]);
-        }
+
     }
-}
-
-
-void main(void)
-{
-    int i, len = 6;
-    linked_list graph[len];
-    for(i=0;i<len;i++)
-    {
-        graph[i] = create_list();
-    }
-    fill_graph(graph,len);
-    printf("List 4: ");
-    show_list(graph[0]);
-}
-
-
-
-int fill_graph(linked_list *graph, float densidade)
-{
-    float max_v = (grafo->v)*(grafo->v - 1);
-    densidade_atual = grafo->n_vertices/max_v;
-
-    int i;
     // Início do grafo, condição mínima de existência
     for(i=0; i<grafo->n_vertices-1; i++)
     {

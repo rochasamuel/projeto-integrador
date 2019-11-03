@@ -2,80 +2,86 @@
 #include <stdio.h>
 
 
-//pre-typedef'ing a pointer to a node as link
+//Nomeando o ponteiro para a struct como 'vertice'
 typedef struct list_item *vertice;
 
-//Defining a node
+//Definindo um item da lista de adjacência
 struct list_item{
-    int label;
-    int value;
-    int weight;
-    vertice next;
-    vertice previous;
+    int label;  // Nome do vértice
+    int value;  // Valor do vértice
+    int weight;  // Peso da conexão ao vértice
+    vertice next; // Ponteiro pro próximo vértice na lista
+    vertice previous;  // Ponteiro pro vértice anterior na lista
 };
 
 
-// pre-typedef'ing a pointer to a linked-list as header
+// Chamando a struct com a 'cabeça' da lista de adjacência de 'adjacents'
 typedef struct linked_list *adjacents;
 
-// Defining a linked-list header
+// Definindo a cabeça da lista de adjacência
 struct linked_list{
-    int len;
-    int label;
-    vertice start;
-    vertice end;
+    int len;  // Tamanho da lista
+    int label;  // Nome do vértice a que a lista se refere
+    vertice start;  // Vértice inicial da lista
+    vertice end;  // Vértice final da lista
 };
 
 
-// On to the functions
+// Vamos àsfunções
 
 adjacents create_list(void)
 {
-    adjacents L = malloc(sizeof(*L));
-    L->len = 0;
-    l->label = 0;
-    L->start = NULL;
-    L->end = NULL;
+    // Essa função retorna um ponteiro para uma lista ligada de adjacência
+    adjacents L = malloc(sizeof(*L));  // Alocação de memória
+    L->len = 0;  // Tamanho da lista
+    l->label = 0;  // Nome do vértice a que a lista se refere
+    L->start = NULL; // Endereço do primeiro vértice da lista de adjacência
+    L->end = NULL;  // Endereço do último vértice da lista de adjacência
     return L;
 }
 
 vertice create_item(void)
 {
-    vertice new_item = malloc(sizeof(*new_item));
-    new_item->next = NULL;
-    new_item->previous = NULL;
-    new_item->label = 0;
-    new_item->value = 0;
-    new_item->weight = 0;
+    // Cria um vértice para lista de adjacẽncia
+    vertice new_item = malloc(sizeof(*new_item));  // Alocação de memória
+    new_item->next = NULL; // Ponteiro para o próximo vértice na lista de adjacẽnca
+    new_item->previous = NULL;  // Ponteiro para o vértice anterior na lista de adjacência
+    new_item->label = 0;  // Nome do vértice
+    new_item->value = 0;  // Valor do vértice
+    new_item->weight = 0;  // Peso para conexão a este vértice nessa lista
     return new_item;
 }
 
 void show_adjacents(adjacents L)
 {
+    // Mostra os elementos da lista de adjacência
     printf("L: -");
-    vertice current = create_item();
+    vertice current = create_item();  // Cria um vértice local para receber os valores
     for(current = L->start; current != NULL; current = current->next)
+    // For loop que itera sobre a lista toda
+    // esse loop é usado diversas vezes.
     {
-        printf("%d-",current->value);
+        // Printa 3-upla para cada item, com label, value e weight
+        printf("(%d,%d,%f)-",current->label, current->value, current->weight);
     }
     printf("\n");
 }
 
 int remove_adjacent(int target_label, adjacents L)
 {
+    // Remove o item de label 'target_label' da lista de adjacência
     vertice current = create_item();
-    // Traversing the list
+    // Testando para o caso no qual o primeiro elemento da lista já é nosso alvo
     if(L->start->value == target)
     {
-        // In case target value is fist on the list
         vertice temp = create_item();
         temp = L->start;
         L->start = temp->next;
-        L->len--;
-        free(temp);
-        show_list(L);
+        L->len--;  // Diminui o comprimento da lista em 1
+        free(temp);  // Libera espaço de temp na memória
         return 0;
     }
+    // Itera sobre a lista para buscar item a ser removido
     for(current = L->start; current != NULL; current = current->next)
     {
         if(current->next->value == target)
@@ -95,19 +101,22 @@ int remove_adjacent(int target_label, adjacents L)
 
 int add_adjacent(int new_label, int new_value, int new_weight, adjacents L)
 {
+    // Adiciona vértice à lista de adjacência
     int i;
-    vertice new_item = create_item();
+    vertice new_item = create_item();  // Cria novo vértice....
     new_item->value = new_value;
     new_item->label = new_label;
-    new_item->weight = new_weight;
+    new_item->weight = new_weight;  // ... e preenche os valores informados
     new_item->next = L->start;
     new_item->previous = NULL;
-    L->start = new_item;
+    L->start->previous = new_item;
+    L->start = new_item;  // E adiciona ele ao início da fila
     return 0;
 }
 
 int is_adjacent_to(int label, adjacents L)
 {
+    // Testa se 'label' é percentence a essa lista de adjacência
     for(current = L->start; current != NULL; current = current->next)
     {
         if(current->label == label) return 1;
