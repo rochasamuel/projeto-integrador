@@ -96,14 +96,28 @@ graph create_graph(int n_vertices, float density, int max_weight)
     }
     int max_links = (grafo->n_vertices)*(grafo->n_vertices - 1);  // Definindo valor máximo de links
     float current_density = grafo->n_links/max_links;  // Valor atual da densidade (links_atual/max)
+
     while(current_density <= density)
+    /*
+    Esse While tem um problema: como ele aleatoriamente gera pares para tentar inserir, à medida que o grafo vai ficando
+    mais denso a chance de conseguir gerar um novo par que funcione diminui. Então quanto mais perto de densidade 1 o grafo
+    for, mais tempo ele vai ficar preso aqui tentando encontrar pares certos.
+    */
     {
         // Pegando dois elementos aleatórios do grafo, pelos labels
         vertice_1 = rand() % grafo->n_vertices;
         vertice_2 = rand() % grafo->n_vertices;
 
         // Testando para ver se eles já não estão ligados
-        
+        if(is_adjacent_to(vertice1, grafo->adjacency_list[vertice_2]))
+        {
+            continue;  // Se um é adjacente do outro, o outro é adjacente do um, então pegamos um novo par de valores.
+        }
+
+        // Adicionando o vertice 1 como adjacente do 2
+        add_adjacent(vertice_1, vertice_1, random_weight(max_weight), grafo->adjacency_list[vertice_2]);
+        // E adicionando o 2 como adjacente do 1
+        add_adjacent(vertice_2, vertice_2, random_weight(max_weight), grafo->adjacency_list[vertice_1]);
     }
 
 }
