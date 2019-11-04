@@ -114,6 +114,7 @@ int add_adjacent(int new_label, int new_value, int new_weight, adjacents L)
         L->start->previous = new_item;
     }
     L->start = new_item;  // E adiciona ele ao início da fila
+    L->len++;
     return 0;
 }
 

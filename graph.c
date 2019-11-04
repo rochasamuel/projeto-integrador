@@ -129,9 +129,9 @@ graph create_graph(int n_vertices, float density, int max_weight)
         int vertice_2 = rand() % g->n_vertices;
 
         // Testando para ver se eles já não estão ligados
-        printf("Testando se %d.....\n",vertice_1);
+        printf("\nTestando se %d.....\n",vertice_1);
         vertice cur = create_item();
-        printf("Is in here: ");
+        printf("Is in %d: ",vertice_2);
         for(cur = g->adjacency_list[vertice_2]->start; cur != NULL; cur = cur->next)
         {
             printf("%d, ",cur->label);
@@ -153,10 +153,9 @@ graph create_graph(int n_vertices, float density, int max_weight)
         current_density = (float)g->n_links/(float)(2*max_links);
         printf("Densidade atual ----> %f\n",current_density);
         int x;
-        printf("\t\tNumero atual de links: %d",g->n_links);
-        scanf("%d",&x);
+        printf("\t\tNumero atual de links: %d\n",g->n_links);
     }
-
+    return g;
 }
 
 void graph_report(graph g)
@@ -182,8 +181,14 @@ void graph_report(graph g)
 
 void main(void)
 {
-    graph g = create_graph(5, 0.3, 0);
-    printf("AAAANTES: Vertices -> %d",g->n_vertices);
+    int nodes, mw;
+    float density;
+    printf("Vertices: ");
+    scanf("%d",&nodes);
+    printf("\nDensity: ");
+    scanf("%f",&density);
+    printf("\nMax weight: ");
+    scanf("%d",&mw);
+    graph g = create_graph(nodes, density, mw);
     graph_report(g);
-
 }
