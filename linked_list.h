@@ -34,7 +34,7 @@ adjacents create_list(void)
     // Essa função retorna um ponteiro para uma lista ligada de adjacência
     adjacents L = malloc(sizeof(*L));  // Alocação de memória
     L->len = 0;  // Tamanho da lista
-    l->label = 0;  // Nome do vértice a que a lista se refere
+    L->label = 0;  // Nome do vértice a que a lista se refere
     L->start = NULL; // Endereço do primeiro vértice da lista de adjacência
     L->end = NULL;  // Endereço do último vértice da lista de adjacência
     return L;
@@ -62,7 +62,7 @@ void show_adjacents(adjacents L)
     // esse loop é usado diversas vezes.
     {
         // Printa 3-upla para cada item, com label, value e weight
-        printf("(%d,%d,%f)-",current->label, current->value, current->weight);
+        printf("(%d,%d,%d)-",current->label, current->value, current->weight);
     }
     printf("\n");
 }
@@ -72,7 +72,7 @@ int remove_adjacent(int target_label, adjacents L)
     // Remove o item de label 'target_label' da lista de adjacência
     vertice current = create_item();
     // Testando para o caso no qual o primeiro elemento da lista já é nosso alvo
-    if(L->start->value == target)
+    if(L->start->value == target_label)
     {
         vertice temp = create_item();
         temp = L->start;
@@ -84,14 +84,13 @@ int remove_adjacent(int target_label, adjacents L)
     // Itera sobre a lista para buscar item a ser removido
     for(current = L->start; current != NULL; current = current->next)
     {
-        if(current->next->value == target)
+        if(current->next->value == target_label)
         {
             vertice temp = create_item();
             temp = current->next;
             current->next = current->next->next;
             L->len--;
             free(temp);
-            show_list(L);
             return 0;
         }
     }
@@ -109,14 +108,19 @@ int add_adjacent(int new_label, int new_value, int new_weight, adjacents L)
     new_item->weight = new_weight;  // ... e preenche os valores informados
     new_item->next = L->start;
     new_item->previous = NULL;
-    L->start->previous = new_item;
+    printf("\t\tVejamos o tamanho da lista de adjacentes: %d\n",L->len);
+    if(L->len > 0) // Só precisa reescrever o 'anterior' do primeiro item se houver um primeiro item
+    {
+        L->start->previous = new_item;
+    }
     L->start = new_item;  // E adiciona ele ao início da fila
     return 0;
 }
 
 int is_adjacent_to(int label, adjacents L)
 {
-    // Testa se 'label' é percentence a essa lista de adjacência
+    // Testa se 'label' é pertencente a essa lista de adjacência
+    vertice current = create_item();
     for(current = L->start; current != NULL; current = current->next)
     {
         if(current->label == label) return 1;
