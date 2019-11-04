@@ -1,6 +1,7 @@
 #include "linked_list.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 
 // Definindo struct de grafo
@@ -40,7 +41,7 @@ graph create_graph(int n_vertices, float density, int max_weight)
     // Inicialização do grafo, condição mínima de existência
     // Fazendo uma 'fila indiana' de conexões, onde 0 está ligado a 1, 1 a 2, 2 a 3, etc.
     // Se isso não for garantido o grafo fica fatiado em vários mini-grafos não contínuos.
-
+    clock_t init_start = clock();
     for(i=0; i < g->n_vertices; i++)
     {
         // Caso inicial, onde não há elemento anterior a adicionar
@@ -90,6 +91,9 @@ graph create_graph(int n_vertices, float density, int max_weight)
             g->n_links++;
         }
     }
+    clock_t init_end = clock();
+    double delta = ((double)init_end-(double)init_start)/CLOCKS_PER_SEC;
+    printf("Total initialization runtime: %.2f s\n",delta);
 
     if(density == 0)
     {
@@ -100,6 +104,8 @@ graph create_graph(int n_vertices, float density, int max_weight)
     float current_density = ((float)g->n_links/(float)(max_links))/2.0;  // Valor atual da densidade (links_atual/max)
                                                        // A multiplicação por 2 é porque os links estão contados duas vezes
 
+    int clock_counter = 0;
+    clock_t partial_start = clock();
     while(current_density <= density)
     /*
     Esse While tem um problema: como ele aleatoriamente gera pares para tentar inserir, à medida que o grafo vai ficando
@@ -107,6 +113,7 @@ graph create_graph(int n_vertices, float density, int max_weight)
     for, mais tempo ele vai ficar preso aqui tentando encontrar pares certos.
     */
     {
+        clock_counter++;
         // Pegando dois elementos aleatórios do grafo, pelos labels
         int vertice_1 = rand() % g->n_vertices, vertice_2;
         do
@@ -132,6 +139,7 @@ graph create_graph(int n_vertices, float density, int max_weight)
         // Atualizando o numero de links
         current_density = ((float)g->n_links/(float)(max_links))/2.0;
     }
+    printf("Total iterations: %d\n",clock_counter);
     return g;
 }
 
@@ -166,6 +174,13 @@ void main(void)
     scanf("%f",&density);
     printf("\nMax weight: ");
     scanf("%d",&mw);
+
+    clock_t begin = clock();
+
     graph g = create_graph(nodes, density, mw);
-    graph_report(g);
+    //graph_report(g);
+    clock_t end = clock();
+
+    double delta = ((double)end-(double)begin)/CLOCKS_PER_SEC;
+    printf("Total runtime: %.2f s\n",delta);
 }

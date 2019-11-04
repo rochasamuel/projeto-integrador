@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 
 //Nomeando o ponteiro para a struct como 'vertice'
