@@ -23,27 +23,17 @@ graph create_graph(int n_vertices, float density, int max_weight)
 {
     // Função que retorna struct 'grafo' preenchida com n_vertices e densidade de links = 'density'
     int i;
-    printf("Me pediram um grafo com %d vertices, densidade de %f, e peso maximo de %d\n",n_vertices,density, max_weight);
     graph g = malloc(sizeof(*g));  // Aloca espaço na memória para struct de grafo
-    printf("Aloquei o espaço de memória do grafo G\n");
     g->n_vertices = n_vertices;  // Pré-determina número de vértices]
-    printf("Meu grafo agora sabe que tem %d vertices.\n",g->n_vertices);
     g->n_links = 0;  // Número de links é zero porque é incrementado dinamicamente
-    printf("Por hora, o numero de links é %d\n",g->n_links);
     g->adjacency_list = malloc(sizeof(adjacents)*n_vertices);
-    printf("Aloquei o espaço de memória pro array de listas de adjacência, no tamanho de %ld bits\n", sizeof(g->adjacency_list));
     // Cria vetor com tamanho 'v_vertices' de ponteiros para listas de adjacências.
-    printf("Vou começar a iterar sobre os vertices para criá-los\n");
     for(i=0; i<n_vertices; i++) 
     {
-        printf("Criando a lista do vertice #%d\n",i);
         // Inicializa cada elemento to vetor de listas ligadas
         g->adjacency_list[i] = create_list();  // Ponteiro para lista de adjacência
-        printf("Criei a lista\n");
         g->adjacency_list[i]->len = 0;  // Comprimento zero
-        printf("Coloquei o tamanho dela como %d.\n",g->adjacency_list[i]->len);
         g->adjacency_list[i]->label = i;  // Label igual ao índice do vetor
-        printf("E o label dela eh: %d\n",g->adjacency_list[i]->label);
     }
 
 
@@ -51,10 +41,8 @@ graph create_graph(int n_vertices, float density, int max_weight)
     // Fazendo uma 'fila indiana' de conexões, onde 0 está ligado a 1, 1 a 2, 2 a 3, etc.
     // Se isso não for garantido o grafo fica fatiado em vários mini-grafos não contínuos.
 
-    printf("AGORA vou iterar sobre os %d vertices do grafo.\n",g->n_vertices);
     for(i=0; i < g->n_vertices; i++)
     {
-        printf("Estou no i = %d\n",i);
         // Caso inicial, onde não há elemento anterior a adicionar
         /*
         Esse bloco de código adiciona, na lista de adjacência do vértice 0, o vértice
@@ -62,7 +50,6 @@ graph create_graph(int n_vertices, float density, int max_weight)
         */
         if(i == 0)
         {
-            printf("\tEstou no primeiro vertice, então vou adicionar só o da frente.\n");
             int next_label = i+1;
             int next_value = i+1;
             int next_weight = random_weight(max_weight);
@@ -76,7 +63,6 @@ graph create_graph(int n_vertices, float density, int max_weight)
         */
         else if(i == g->n_vertices-1)
         {
-            printf("\tEstou no ultimo vertice, então vou adicionar só o de tras.\n");
             int next_label = i-1;
             int next_value = i-1;
             int next_weight = random_weight(max_weight);
@@ -91,7 +77,6 @@ graph create_graph(int n_vertices, float density, int max_weight)
 
         else        
         {
-            printf("\tEstou num vertice do meio, então vou adicionar o da frente e o de tras.\n");
             int next_label = i+1;
             int next_value = i+1;
             int next_weight = random_weight(max_weight);
@@ -112,8 +97,6 @@ graph create_graph(int n_vertices, float density, int max_weight)
         return g;
     }
     float max_links = ((g->n_vertices)*(g->n_vertices - 1))/2.0;  // Definindo valor máximo de links
-    printf("\t\tMax links: %f",max_links);
-    printf("\t\tNumero atual de links: %f",g->n_links/2.0);
     float current_density = ((float)g->n_links/(float)(max_links))/2.0;  // Valor atual da densidade (links_atual/max)
                                                        // A multiplicação por 2 é porque os links estão contados duas vezes
 
@@ -148,9 +131,6 @@ graph create_graph(int n_vertices, float density, int max_weight)
         g->n_links++;
         // Atualizando o numero de links
         current_density = ((float)g->n_links/(float)(max_links))/2.0;
-        printf("Densidade atual ----> %f\n",current_density);
-        int x;
-        printf("\t\tNumero atual de links: %d\n",g->n_links);
     }
     return g;
 }
