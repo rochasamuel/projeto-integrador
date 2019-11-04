@@ -108,7 +108,6 @@ int add_adjacent(int new_label, int new_value, int new_weight, adjacents L)
     new_item->weight = new_weight;  // ... e preenche os valores informados
     new_item->next = L->start;
     new_item->previous = NULL;
-    printf("\t\tVejamos o tamanho da lista de adjacentes: %d\n",L->len);
     if(L->len > 0) // Só precisa reescrever o 'anterior' do primeiro item se houver um primeiro item
     {
         L->start->previous = new_item;
