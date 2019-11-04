@@ -111,10 +111,10 @@ graph create_graph(int n_vertices, float density, int max_weight)
         // Se a densidade alvo for 0, ou seja, a menor possível, o grafo já está pronto.
         return g;
     }
-    int max_links = (g->n_vertices)*(g->n_vertices - 1);  // Definindo valor máximo de links
-    printf("\t\tMax links: %d",max_links);
-    printf("\t\tNumero atual de links: %d",g->n_links);
-    float current_density = (float)g->n_links/(float)(2*max_links);  // Valor atual da densidade (links_atual/max)
+    float max_links = ((g->n_vertices)*(g->n_vertices - 1))/2.0;  // Definindo valor máximo de links
+    printf("\t\tMax links: %f",max_links);
+    printf("\t\tNumero atual de links: %f",g->n_links/2.0);
+    float current_density = ((float)g->n_links/(float)(max_links))/2.0;  // Valor atual da densidade (links_atual/max)
                                                        // A multiplicação por 2 é porque os links estão contados duas vezes
 
     while(current_density <= density)
@@ -125,24 +125,21 @@ graph create_graph(int n_vertices, float density, int max_weight)
     */
     {
         // Pegando dois elementos aleatórios do grafo, pelos labels
-        int vertice_1 = rand() % g->n_vertices;
-        int vertice_2 = rand() % g->n_vertices;
+        int vertice_1 = rand() % g->n_vertices, vertice_2;
+        do
+        {
+            vertice_2 = rand() % g->n_vertices;
+        } while(vertice_1 == vertice_2);
+        
+        
 
         // Testando para ver se eles já não estão ligados
-        printf("\nTestando se %d.....\n",vertice_1);
         vertice cur = create_item();
-        printf("Is in %d: ",vertice_2);
-        for(cur = g->adjacency_list[vertice_2]->start; cur != NULL; cur = cur->next)
-        {
-            printf("%d, ",cur->label);
-        }
         if(is_adjacent_to(vertice_1, g->adjacency_list[vertice_2]))
         {
-            printf("\t Já é!\n");
             continue;  // Se um é adjacente do outro, o outro é adjacente do um, então pegamos um novo par de valores.
         }
-        printf("\t Não é!\n");
-
+        
         // Adicionando o vertice 1 como adjacente do 2
         add_adjacent(vertice_1, vertice_1, random_weight(max_weight), g->adjacency_list[vertice_2]);
         g->n_links++;
@@ -150,7 +147,7 @@ graph create_graph(int n_vertices, float density, int max_weight)
         add_adjacent(vertice_2, vertice_2, random_weight(max_weight), g->adjacency_list[vertice_1]);
         g->n_links++;
         // Atualizando o numero de links
-        current_density = (float)g->n_links/(float)(2*max_links);
+        current_density = ((float)g->n_links/(float)(max_links))/2.0;
         printf("Densidade atual ----> %f\n",current_density);
         int x;
         printf("\t\tNumero atual de links: %d\n",g->n_links);
