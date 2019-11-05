@@ -33,7 +33,7 @@ struct linked_list{
 adjacents create_list(void)
 {
     // Essa função retorna um ponteiro para uma lista ligada de adjacência
-    adjacents L = malloc(sizeof(*L));  // Alocação de memória
+    adjacents L = (adjacents)malloc(sizeof(*L));  // Alocação de memória
     L->len = 0;  // Tamanho da lista
     L->label = 0;  // Nome do vértice a que a lista se refere
     L->start = NULL; // Endereço do primeiro vértice da lista de adjacência
@@ -44,7 +44,7 @@ adjacents create_list(void)
 vertice create_item(void)
 {
     // Cria um vértice para lista de adjacẽncia
-    vertice new_item = malloc(sizeof(*new_item));  // Alocação de memória
+    vertice new_item = (vertice)malloc(sizeof(*new_item));  // Alocação de memória
     new_item->next = NULL; // Ponteiro para o próximo vértice na lista de adjacẽnca
     new_item->previous = NULL;  // Ponteiro para o vértice anterior na lista de adjacência
     new_item->label = 0;  // Nome do vértice
