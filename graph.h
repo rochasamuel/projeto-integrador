@@ -24,10 +24,10 @@ graph create_graph(int n_vertices, float density, int max_weight)
 {
     // Função que retorna struct 'grafo' preenchida com n_vertices e densidade de links = 'density'
     int i;
-    graph g = malloc(sizeof(*g));  // Aloca espaço na memória para struct de grafo
+    graph g = (graph)malloc(sizeof(*g));  // Aloca espaço na memória para struct de grafo
     g->n_vertices = n_vertices;  // Pré-determina número de vértices]
     g->n_links = 0;  // Número de links é zero porque é incrementado dinamicamente
-    g->adjacency_list = malloc(sizeof(adjacents)*n_vertices);
+    g->adjacency_list = (adjacents*)malloc(sizeof(adjacents)*n_vertices);
     // Cria vetor com tamanho 'v_vertices' de ponteiros para listas de adjacências.
     for(i=0; i<n_vertices; i++) 
     {
@@ -164,23 +164,3 @@ void graph_report(graph g)
     }
 }
 
-void main(void)
-{
-    int nodes, mw;
-    float density;
-    printf("Vertices: ");
-    scanf("%d",&nodes);
-    printf("\nDensity: ");
-    scanf("%f",&density);
-    printf("\nMax weight: ");
-    scanf("%d",&mw);
-
-    clock_t begin = clock();
-
-    graph g = create_graph(nodes, density, mw);
-    //graph_report(g);
-    clock_t end = clock();
-
-    double delta = ((double)end-(double)begin)/CLOCKS_PER_SEC;
-    printf("Total runtime: %.2f s\n",delta);
-}
