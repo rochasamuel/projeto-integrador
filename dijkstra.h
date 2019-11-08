@@ -28,24 +28,9 @@ graph copy_graph(graph G)
 
     // Populando a lista de adjacência com os headers
     int i;
-    for(i=0; i<copy->number_of_elements; i++) 
+    for(i = 0; i < G->n_vertices; i++)
     {
-        // Inicializa cada elemento to vetor de listas ligadas
-        copy->adjacency_list[i] = criarCabecalho();  // Ponteiro para lista de adjacência
-        copy->adjacency_list[i]->number_of_elements = 0;  // Comprimento zero
-        copy->adjacency_list[i]->id = i;  // Label igual ao índice do vetor
-    }
-
-    // Agora é hora de DUPLICAR elemento a elemento. Não podemos copiar o ponteiro porque se não é o mesmo lugar da memória.
-    // Iteramos mais uma vez sobre os indices do vetor de listas ligadas...
-    for(i=0; i<copy->number_of_elements; i++)
-    {
-        ptr_elemento current = criarElemento();
-        // E agora sobre cada elemento da lista ligada
-        for(current = G->adjacency_list[i]->start; current != NULL; current = current->next)
-        {
-            pushElemento(current->id, current->value, current->weight, copy->adjacency_list[i]);
-        }
+        copy->adjacency_list[i] = copiarLista(G->adjacency_list[i])
     }
     return copy;
 }
