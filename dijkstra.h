@@ -49,3 +49,16 @@ graph copy_graph(graph G)
     }
     return copy;
 }
+
+int remove_node_from_graph(int label, graph G)
+{
+    // Será necessário pra remover nódulos do grafo copiado
+    vertice current = create_item();
+    for(current = G->adjacency_list[label]->start; current != NULL; current = current->next)
+    {
+        remove_link(label, current->label, G);
+        G->n_links = G->n_links - 2;
+    }
+    return 0;
+}
+

@@ -143,6 +143,14 @@ graph create_graph(int n_vertices, float density, int max_weight)
     return g;
 }
 
+int remove_link(int label_A, int label_B, graph G)
+{
+    remove_adjacent(label_A, G->adjacency_list[label_B]);
+    G->n_links--;
+    remove_adjacent(label_B, G->adjacency_list[label_A]);
+    G->n_links--; 
+}
+
 void graph_report(graph g)
 {
     printf("Graph Report\n");
@@ -158,8 +166,8 @@ void graph_report(graph g)
         int k = 0;
         for(current = g->adjacency_list[i]->start; current != NULL; current = current->next)
         {
-            k++;
             printf("\t\t#%d: (%d,%d,%d)\n",k+1,current->label, current->value, current->weight);
+            k++;
         }
     }
 }
