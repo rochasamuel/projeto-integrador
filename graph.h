@@ -145,9 +145,9 @@ graph create_graph(int n_vertices, float density, int max_weight)
 
 int remove_link(int id_A, int id_B, graph G)
 {
-    remove_adjacent(id_A, G->adjacency_list[id_B]);
+    popElemento(id_A, G->adjacency_list[id_B]);
     G->n_links--;
-    remove_adjacent(id_B, G->adjacency_list[id_A]);
+    popElemento(id_B, G->adjacency_list[id_A]);
     G->n_links--;
     return 0;
 }
