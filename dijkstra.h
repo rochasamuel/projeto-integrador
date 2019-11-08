@@ -31,7 +31,7 @@ graph copy_graph(graph G)
     for(i=0; i<copy->n_vertices; i++) 
     {
         // Inicializa cada elemento to vetor de listas ligadas
-        copy->adjacency_list[i] = criar_cabecalho();  // Ponteiro para lista de adjacência
+        copy->adjacency_list[i] = criarCabecalho();  // Ponteiro para lista de adjacência
         copy->adjacency_list[i]->len = 0;  // Comprimento zero
         copy->adjacency_list[i]->label = i;  // Label igual ao índice do vetor
     }

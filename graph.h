@@ -32,7 +32,7 @@ graph create_graph(int n_vertices, float density, int max_weight)
     for(i=0; i<n_vertices; i++) 
     {
         // Inicializa cada elemento to vetor de listas ligadas
-        g->adjacency_list[i] = criar_cabecalho();  // Ponteiro para lista de adjacência
+        g->adjacency_list[i] = criarCabecalho();  // Ponteiro para lista de adjacência
         g->adjacency_list[i]->number_of_elements = 0;  // Comprimento zero
         g->adjacency_list[i]->id = i;  // Label igual ao índice do vetor
     }
@@ -125,7 +125,7 @@ graph create_graph(int n_vertices, float density, int max_weight)
 
         // Testando para ver se eles já não estão ligados
         ptr_elemento cur = criarElemento();
-        if(is_adjacent_to(vertice_1, g->adjacency_list[vertice_2]))
+        if(listaContem(vertice_1, g->adjacency_list[vertice_2]) != NULL)
         {
             continue;  // Se um é adjacente do outro, o outro é adjacente do um, então pegamos um novo par de valores.
         }
@@ -155,7 +155,7 @@ int remove_link(int id_A, int id_B, graph G)
 int add_link(int id_A, int value_A, int max_weight_A, 
                 int id_B, int value_B, int max_weight_B,  graph G)
 {
-    if(is_adjacent_to(id_B, G->adjacency_list[id_A]))
+    if(listaContem(id_B, G->adjacency_list[id_A]) != NULL)
     {
         return 0;
     }
@@ -187,14 +187,15 @@ void graph_report(graph g)
     }
 }
 
-ptr_cabecalho_LL lista_de_elementos(graph G)
+ptr_cabecalho_LL listaDeElementos(graph G)
 {
     ptr_cabecalho_LL elementos_restantes = criarCabecalho();
     int i;
 
     for(i = 0; i < G->n_vertices; i++)
     {
-        
+        pushElemento(G->adjacency_list[i]->id, 0, 0, elementos_restantes);
     }
+    return elementos_restantes;
 }
 

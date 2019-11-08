@@ -70,7 +70,7 @@ void mostrarElementos(ptr_cabecalho_LL L)
     printf("\n");
 }
 
-int popElemento(int target_id, ptr_cabecalho_LL L)
+ptr_elemento popElemento(int target_id, ptr_cabecalho_LL L)
 {
     // Remove o item de id 'target_id' da lista de adjacência
     ptr_elemento current = criarElemento();
@@ -82,8 +82,7 @@ int popElemento(int target_id, ptr_cabecalho_LL L)
         temp = L->start;
         L->start = temp->next;
         L->number_of_elements--;  // Diminui o comprimento da lista em 1
-        free(temp);  // Libera espaço de temp na memória
-        return 0;
+        return temp;
     }
     // Itera sobre a lista para buscar item a ser removido
     for(current = L->start; current != NULL; current = current->next)
@@ -95,12 +94,10 @@ int popElemento(int target_id, ptr_cabecalho_LL L)
             temp = current->next;
             current->next = current->next->next;
             L->number_of_elements--;
-            free(temp);
-            return 0;
+            return temp;
         }
     }
-    printf("Item not on list");
-    return 0;
+    return NULL;
 }
 
 int pushElemento(int new_id, int new_value, int new_weight, ptr_cabecalho_LL L)
@@ -120,16 +117,79 @@ int pushElemento(int new_id, int new_value, int new_weight, ptr_cabecalho_LL L)
     L->start = new_item;  // E adiciona ele ao início da fila
     L->sum_of_weights += new_item->weight;
     L->number_of_elements++;
-    return 0;
+    return 1;
 }
 
-int is_adjacent_to(int id, ptr_cabecalho_LL L)
+ptr_elemento elementoAleatorio(ptr_cabecalho_LL L)
 {
-    // Testa se 'id' é pertencente a essa lista de adjacência
+    // Retorna membro aleatório da lista ligada, ou NULL se não houver.
+    if(L->number_of_elements == 0)
+    {
+        return NULL;
+    }
+    int iterations = rand() % L->number_of_elements;
+    ptr_elemento current = criarElemento();
+    int counter;
+    for(counter=0; counter < L->number_of_elements; counter++)
+    {
+        current = current->next;  // Vai até o iterations-ésimo elemento e o retorna.
+    }
+    return current;
+}
+
+ptr_elemento listaContem(int id, ptr_cabecalho_LL L)
+{
+    // Testa se 'id' é pertencente a essa lista de adjacência e retorna o elemento, se não NULL.
     ptr_elemento current = criarElemento();
     for(current = L->start; current != NULL; current = current->next)
     {
-        if(current->id == id) return 1;
+        if(current->id == id) return current;
     }
-    return 0;
+    return NULL;
+}
+
+ptr_cabecalho_LL copiarLista(ptr_cabecalho_LL L)
+{
+    ptr_cabecalho_LL copia = criarCabecalho();
+    copia->id = L->id;
+    ptr_elemento current = criarElemento();
+    for(current = L->start; current != NULL; current = current->next)
+    {
+        pushElemento(current->id, current->value, current->weight, copia);
+    }
+    return copia;
+}
+
+int removerLoops(ptr_cabecalho_LL L)
+{
+    // Vou usar os atributos da lista ligada já definida de uma forma um pouco diferente.
+
+    ptr_cabecalho_LL arvore = criarCabecalho(); // por hora a definição é normal
+    int iterations = L->number_of_elements;
+    printf("Vou fazer %d iteracoes.\n",iterations);
+    ptr_elemento current;
+    int loops_found = 0;
+    for(current = L->start; current != NULL; current = current->next)
+    {
+        printf("Vendo se %d esta na lista acima...\n",current->id);
+        ptr_elemento antecessor = listaContem(current->id, arvore); //currentID está na árvore?
+        if(antecessor != NULL) // Se não é NULL, está!
+        {
+            loops_found++;
+            printf("Achei um loop!\n");
+            printf("%d <-----> %d\n",antecessor->id, current->id);
+            antecessor->next = current->next;
+            if(antecessor->next != NULL)
+            {
+                antecessor->next->previous = antecessor;
+            }
+        }
+        else
+        {
+            pushElemento(current->id,current->value, current->weight, arvore);
+            printf("Minha arvore atual.\n");
+            mostrarElementos(arvore);
+        }
+    }
+    return 1;
 }

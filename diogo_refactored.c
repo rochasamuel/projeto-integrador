@@ -48,9 +48,25 @@ int semConexao(ptr_cabecalho_LL Node)
 // A função de calcular o peso do cromossomo pode ser substituída pelo atributo .sum_of_weights
 
 ptr_cabecalho_LL caminhoAleatorio(graph G, int id_START, int id_END)
-{
+{   // Returna LL se gerou, NULL se não.
     // Primeiro uma lista ligada com todos os ids de elementos do grafo
-    
+    ptr_cabecalho_LL elementos_restantes = copiarLista(listaDeElementos(G));  // É uma lista ligada isso aqui.
+    // Agora, a partir do id_START, juntar aleatoriamente vértices, até acabar com eles ou chegar ao destino.
 
-
+    ptr_cabecalho_LL caminho_aleatorio = criarCabecalho();
+    ptr_elemento to_add = popElemento(id_START, elementos_restantes);
+    while(to_add != NULL & elementos_restantes->number_of_elements > 0)
+    {
+        pushElemento(to_add->id, to_add->value, to_add->weight, caminho_aleatorio);
+        to_add = elementoAleatorio(G->adjacency_list[to_add->id]);
+        popElemento(to_add->id, elementos_restantes);
+        if(to_add->id == id_END)
+        {
+            pushElemento(to_add->id, to_add->value, to_add->weight, caminho_aleatorio);
+            return caminho_aleatorio;
+        }
+    }
+    return NULL;
 }
+
+int removerLoops(ptr_)
