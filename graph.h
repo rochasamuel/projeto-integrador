@@ -10,7 +10,7 @@ typedef struct graph_structure *graph;
 struct graph_structure{
     int n_vertices;  // Número de vértices
     int n_links;  // Número de arestas 
-    adjacents *adjacency_list; // Vetor de listas ligadas, de adjacência
+    ptr_cabecalho_LL *adjacency_list; // Vetor de listas ligadas, de adjacência
 };
 
 float random_weight(int max_weight)
@@ -27,14 +27,14 @@ graph create_graph(int n_vertices, float density, int max_weight)
     graph g = (graph)malloc(sizeof(*g));  // Aloca espaço na memória para struct de grafo
     g->n_vertices = n_vertices;  // Pré-determina número de vértices]
     g->n_links = 0;  // Número de links é zero porque é incrementado dinamicamente
-    g->adjacency_list = (adjacents*)malloc(sizeof(adjacents)*n_vertices);
+    g->adjacency_list = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*n_vertices);
     // Cria vetor com tamanho 'v_vertices' de ponteiros para listas de adjacências.
     for(i=0; i<n_vertices; i++) 
     {
         // Inicializa cada elemento to vetor de listas ligadas
-        g->adjacency_list[i] = create_list();  // Ponteiro para lista de adjacência
-        g->adjacency_list[i]->len = 0;  // Comprimento zero
-        g->adjacency_list[i]->label = i;  // Label igual ao índice do vetor
+        g->adjacency_list[i] = criar_cabecalho();  // Ponteiro para lista de adjacência
+        g->adjacency_list[i]->number_of_elements = 0;  // Comprimento zero
+        g->adjacency_list[i]->id = i;  // Label igual ao índice do vetor
     }
 
 
@@ -51,10 +51,10 @@ graph create_graph(int n_vertices, float density, int max_weight)
         */
         if(i == 0)
         {
-            int next_label = i+1;
+            int next_id = i+1;
             int next_value = i+1;
             int next_weight = random_weight(max_weight);
-            add_adjacent(next_label, next_value, next_weight, g->adjacency_list[i]);
+            pushElemento(next_id, next_value, next_weight, g->adjacency_list[i]);
             g->n_links++;
         }
 
@@ -64,10 +64,10 @@ graph create_graph(int n_vertices, float density, int max_weight)
         */
         else if(i == g->n_vertices-1)
         {
-            int next_label = i-1;
+            int next_id = i-1;
             int next_value = i-1;
             int next_weight = random_weight(max_weight);
-            add_adjacent(next_label, next_value, next_weight, g->adjacency_list[i]);
+            pushElemento(next_id, next_value, next_weight, g->adjacency_list[i]);
             g->n_links++;
         }
         /*
@@ -78,16 +78,16 @@ graph create_graph(int n_vertices, float density, int max_weight)
 
         else        
         {
-            int next_label = i+1;
+            int next_id = i+1;
             int next_value = i+1;
             int next_weight = random_weight(max_weight);
-            add_adjacent(next_label, next_value, next_weight, g->adjacency_list[i]);
+            pushElemento(next_id, next_value, next_weight, g->adjacency_list[i]);
             g->n_links++;
 
-            int prev_label = i-1;
+            int prev_id = i-1;
             int prev_value = i-1;
             int prev_weight = random_weight(max_weight);
-            add_adjacent(prev_label, prev_value, prev_weight, g->adjacency_list[i]);
+            pushElemento(prev_id, prev_value, prev_weight, g->adjacency_list[i]);
             g->n_links++;
         }
     }
@@ -114,7 +114,7 @@ graph create_graph(int n_vertices, float density, int max_weight)
     */
     {
         clock_counter++;
-        // Pegando dois elementos aleatórios do grafo, pelos labels
+        // Pegando dois elementos aleatórios do grafo, pelos ids
         int vertice_1 = rand() % g->n_vertices, vertice_2;
         do
         {
@@ -124,17 +124,17 @@ graph create_graph(int n_vertices, float density, int max_weight)
         
 
         // Testando para ver se eles já não estão ligados
-        vertice cur = create_item();
+        ptr_elemento cur = criarElemento();
         if(is_adjacent_to(vertice_1, g->adjacency_list[vertice_2]))
         {
             continue;  // Se um é adjacente do outro, o outro é adjacente do um, então pegamos um novo par de valores.
         }
         
-        // Adicionando o vertice 1 como adjacente do 2
-        add_adjacent(vertice_1, vertice_1, random_weight(max_weight), g->adjacency_list[vertice_2]);
+        // Adicionando o ptr_elemento 1 como adjacente do 2
+        pushElemento(vertice_1, vertice_1, random_weight(max_weight), g->adjacency_list[vertice_2]);
         g->n_links++;
         // E adicionando o 2 como adjacente do 1
-        add_adjacent(vertice_2, vertice_2, random_weight(max_weight), g->adjacency_list[vertice_1]);
+        pushElemento(vertice_2, vertice_2, random_weight(max_weight), g->adjacency_list[vertice_1]);
         g->n_links++;
         // Atualizando o numero de links
         current_density = ((float)g->n_links/(float)(max_links))/2.0;
@@ -143,12 +143,27 @@ graph create_graph(int n_vertices, float density, int max_weight)
     return g;
 }
 
-int remove_link(int label_A, int label_B, graph G)
+int remove_link(int id_A, int id_B, graph G)
 {
-    remove_adjacent(label_A, G->adjacency_list[label_B]);
+    remove_adjacent(id_A, G->adjacency_list[id_B]);
     G->n_links--;
-    remove_adjacent(label_B, G->adjacency_list[label_A]);
-    G->n_links--; 
+    remove_adjacent(id_B, G->adjacency_list[id_A]);
+    G->n_links--;
+    return 0;
+}
+
+int add_link(int id_A, int value_A, int max_weight_A, 
+                int id_B, int value_B, int max_weight_B,  graph G)
+{
+    if(is_adjacent_to(id_B, G->adjacency_list[id_A]))
+    {
+        return 0;
+    }
+    pushElemento(id_A, value_A, random_weight(max_weight_A),G->adjacency_list[id_B]);
+    G->n_links++;
+    pushElemento(id_B, value_B, random_weight(max_weight_B),G->adjacency_list[id_A]);
+    G->n_links++;
+    return 1;
 }
 
 void graph_report(graph g)
@@ -161,14 +176,25 @@ void graph_report(graph g)
     int i;
     for(i = 0; i < g->n_vertices; i++)
     {
-        printf("\tNode %d:\n",g->adjacency_list[i]->label);
-        vertice current = create_item();
+        printf("\tNode %d:\n",g->adjacency_list[i]->id);
+        ptr_elemento current = criarElemento();
         int k = 0;
         for(current = g->adjacency_list[i]->start; current != NULL; current = current->next)
         {
-            printf("\t\t#%d: (%d,%d,%d)\n",k+1,current->label, current->value, current->weight);
+            printf("\t\t#%d: (%d,%d,%d)\n",k+1,current->id, current->value, current->weight);
             k++;
         }
+    }
+}
+
+ptr_cabecalho_LL lista_de_elementos(graph G)
+{
+    ptr_cabecalho_LL elementos_restantes = criarCabecalho();
+    int i;
+
+    for(i = 0; i < G->n_vertices; i++)
+    {
+        
     }
 }
 

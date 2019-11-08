@@ -31,7 +31,7 @@ graph copy_graph(graph G)
     for(i=0; i<copy->n_vertices; i++) 
     {
         // Inicializa cada elemento to vetor de listas ligadas
-        copy->adjacency_list[i] = create_list();  // Ponteiro para lista de adjacência
+        copy->adjacency_list[i] = criar_cabecalho();  // Ponteiro para lista de adjacência
         copy->adjacency_list[i]->len = 0;  // Comprimento zero
         copy->adjacency_list[i]->label = i;  // Label igual ao índice do vetor
     }
@@ -40,11 +40,11 @@ graph copy_graph(graph G)
     // Iteramos mais uma vez sobre os indices do vetor de listas ligadas...
     for(i=0; i<copy->n_vertices; i++)
     {
-        vertice current = create_item();
+        vertice current = criarElemento();
         // E agora sobre cada elemento da lista ligada
         for(current = G->adjacency_list[i]->start; current != NULL; current = current->next)
         {
-            add_adjacent(current->label, current->value, current->weight, copy->adjacency_list[i]);
+            pushElemento(current->label, current->value, current->weight, copy->adjacency_list[i]);
         }
     }
     return copy;
@@ -53,7 +53,7 @@ graph copy_graph(graph G)
 int remove_node_from_graph(int label, graph G)
 {
     // Será necessário pra remover nódulos do grafo copiado
-    vertice current = create_item();
+    vertice current = criarElemento();
     for(current = G->adjacency_list[label]->start; current != NULL; current = current->next)
     {
         remove_link(label, current->label, G);
