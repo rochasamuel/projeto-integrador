@@ -22,41 +22,41 @@ forma destrutiva, então não podemos usar o grafo original para não inutilizá
 graph copy_graph(graph G)
 {
     graph copy = (graph)malloc(sizeof(*copy));
-    copy->n_vertices = G->n_vertices;
+    copy->number_of_elements = G->number_of_elements;
     copy->n_links = G->n_links;
-    copy->adjacency_list = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*copy->n_vertices);
+    copy->adjacency_list = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*copy->number_of_elements);
 
     // Populando a lista de adjacência com os headers
     int i;
-    for(i=0; i<copy->n_vertices; i++) 
+    for(i=0; i<copy->number_of_elements; i++) 
     {
         // Inicializa cada elemento to vetor de listas ligadas
         copy->adjacency_list[i] = criarCabecalho();  // Ponteiro para lista de adjacência
-        copy->adjacency_list[i]->len = 0;  // Comprimento zero
-        copy->adjacency_list[i]->label = i;  // Label igual ao índice do vetor
+        copy->adjacency_list[i]->number_of_elements = 0;  // Comprimento zero
+        copy->adjacency_list[i]->id = i;  // Label igual ao índice do vetor
     }
 
     // Agora é hora de DUPLICAR elemento a elemento. Não podemos copiar o ponteiro porque se não é o mesmo lugar da memória.
     // Iteramos mais uma vez sobre os indices do vetor de listas ligadas...
-    for(i=0; i<copy->n_vertices; i++)
+    for(i=0; i<copy->number_of_elements; i++)
     {
-        vertice current = criarElemento();
+        ptr_elemento current = criarElemento();
         // E agora sobre cada elemento da lista ligada
         for(current = G->adjacency_list[i]->start; current != NULL; current = current->next)
         {
-            pushElemento(current->label, current->value, current->weight, copy->adjacency_list[i]);
+            pushElemento(current->id, current->value, current->weight, copy->adjacency_list[i]);
         }
     }
     return copy;
 }
 
-int remove_node_from_graph(int label, graph G)
+int remove_node_from_graph(int id, graph G)
 {
     // Será necessário pra remover nódulos do grafo copiado
-    vertice current = criarElemento();
-    for(current = G->adjacency_list[label]->start; current != NULL; current = current->next)
+    ptr_elemento current = criarElemento();
+    for(current = G->adjacency_list[id]->start; current != NULL; current = current->next)
     {
-        remove_link(label, current->label, G);
+        remove_link(id, current->id, G);
         G->n_links = G->n_links - 2;
     }
     return 0;
