@@ -199,3 +199,35 @@ ptr_cabecalho_LL listaDeElementos(graph G)
     return elementos_restantes;
 }
 
+int to_txt(int centena, int dezena, int unidade, graph G)
+{
+    char file_name[] = "./grafos_em_txt/xxx_grafo.txt";
+    int c_index = 16, d_index = 17, u_index = 18;
+    file_name[c_index] = centena+'0';
+    file_name[d_index] = dezena+'0';
+    file_name[u_index] = unidade+'0';
+    printf("%s",file_name);
+    FILE *f = fopen(file_name,"w");
+    if(f ==NULL)
+    {
+        printf("Deu ruim!\n");
+        return 0;
+    }
+
+    int i;
+    for(i=0; i < G->n_vertices; i++)
+    {
+        int origem = G->adjacency_list[i]->id;
+        ptr_elemento current = criarElemento();
+        for(current = G->adjacency_list[i]->start;
+            current != NULL; 
+            current = current ->next)
+            {
+                int destino = current->id;
+                int peso = current->weight;
+                fprintf(f, "%d,%d,%d\n",origem,destino,peso);
+            }
+    }
+    fclose(f);
+    return 0;
+}
