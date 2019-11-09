@@ -5,7 +5,7 @@
 
 void main(void)
 {
-    int nodes, mw;
+    int nodes, mw, should_print;
     float density;
     printf("Vertices: ");
     scanf("%d",&nodes);
@@ -13,14 +13,17 @@ void main(void)
     scanf("%f",&density);
     printf("\nMax weight: ");
     scanf("%d",&mw);
+    printf("\nShould print?: ");
+    scanf("%d",&should_print);
+
 
     clock_t begin = clock();
 
-    graph g = create_graph(nodes, density, mw);
+    graph g = create_graph(nodes, density, mw, should_print);
     //graph_report(g);
     clock_t end = clock();
 
     double delta = ((double)end-(double)begin)/CLOCKS_PER_SEC;
-    to_txt(3,0,0,g);
     printf("Total runtime: %.2f s\n",delta);
+    to_txt(g);    
 }

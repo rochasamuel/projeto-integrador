@@ -3,6 +3,12 @@
 #include <stdlib.h>
 #include <time.h>
 
+// Função acessória pra calcular distância entre 2 clocks
+double delta_clock(clock_t start, clock_t finish)
+{
+    double answer = ((double)finish-(double)start)/CLOCKS_PER_SEC;
+    return answer;
+}
 
 // Definindo struct de grafo
 typedef struct graph_structure *graph;
@@ -20,8 +26,9 @@ float random_weight(int max_weight)
     return 1 + (rand() % max_weight);
 }
 
-graph create_graph(int n_vertices, float density, int max_weight)
+graph create_graph(int n_vertices, float density, int max_weight, int should_print)
 {
+    clock_t creation_start = clock();
     // Função que retorna struct 'grafo' preenchida com n_vertices e densidade de links = 'density'
     int i;
     graph g = (graph)malloc(sizeof(*g));  // Aloca espaço na memória para struct de grafo
@@ -35,6 +42,12 @@ graph create_graph(int n_vertices, float density, int max_weight)
         g->adjacency_list[i] = criarCabecalho();  // Ponteiro para lista de adjacência
         g->adjacency_list[i]->number_of_elements = 0;  // Comprimento zero
         g->adjacency_list[i]->id = i;  // Label igual ao índice do vetor
+        g->adjacency_list[i]->presentes = (int*)malloc(sizeof(int)*n_vertices);
+        int k;
+        for(k=0;k<n_vertices;k++)
+        {
+            g->adjacency_list[i]->presentes[k] = 0;
+        }
     }
 
 
@@ -92,8 +105,8 @@ graph create_graph(int n_vertices, float density, int max_weight)
         }
     }
     clock_t init_end = clock();
-    double delta = ((double)init_end-(double)init_start)/CLOCKS_PER_SEC;
-    printf("Total initialization runtime: %.2f s\n",delta);
+    double delta_init = ((double)init_end-(double)init_start)/CLOCKS_PER_SEC;
+    
 
     if(density == 0)
     {
@@ -105,7 +118,9 @@ graph create_graph(int n_vertices, float density, int max_weight)
                                                        // A multiplicação por 2 é porque os links estão contados duas vezes
 
     int clock_counter = 0;
-    clock_t partial_start = clock();
+    int valid_counter = 0;
+    clock_t partial_start = clock(), contem_start = clock(), push_start = clock(); 
+    double delta_casca = 0.0, delta_loop = 0.0, delta_different = 0.0, delta_contem = 0.0, delta_push = 0.0;
     while(current_density <= density)
     /*
     Esse While tem um problema: como ele aleatoriamente gera pares para tentar inserir, à medida que o grafo vai ficando
@@ -113,23 +128,33 @@ graph create_graph(int n_vertices, float density, int max_weight)
     for, mais tempo ele vai ficar preso aqui tentando encontrar pares certos.
     */
     {
+        clock_t loop_start = clock();
         clock_counter++;
         // Pegando dois elementos aleatórios do grafo, pelos ids
+        clock_t different_start = clock();
         int vertice_1 = rand() % g->n_vertices, vertice_2;
         do
         {
             vertice_2 = rand() % g->n_vertices;
         } while(vertice_1 == vertice_2);
-        
+        clock_t different_end = clock();
+        delta_different += delta_clock(different_start,different_end);
         
 
         // Testando para ver se eles já não estão ligados
         ptr_elemento cur = criarElemento();
+        clock_t contem_start = clock();
         if(listaContem(vertice_1, g->adjacency_list[vertice_2]) != NULL)
         {
+            clock_t contem_end = clock();
+            delta_contem += delta_clock(contem_start,contem_end);
             continue;  // Se um é adjacente do outro, o outro é adjacente do um, então pegamos um novo par de valores.
         }
+        valid_counter++;
+        clock_t contem_end = clock();
+        delta_contem += delta_clock(contem_start,contem_end);
         
+        clock_t push_start = clock();
         // Adicionando o ptr_elemento 1 como adjacente do 2
         pushElemento(vertice_1, vertice_1, random_weight(max_weight), g->adjacency_list[vertice_2]);
         g->n_links++;
@@ -137,9 +162,22 @@ graph create_graph(int n_vertices, float density, int max_weight)
         pushElemento(vertice_2, vertice_2, random_weight(max_weight), g->adjacency_list[vertice_1]);
         g->n_links++;
         // Atualizando o numero de links
+        clock_t push_end = clock();
+        delta_push += delta_clock(push_start, push_end);
         current_density = ((float)g->n_links/(float)(max_links))/2.0;
+        clock_t loop_end = clock();
+        delta_loop += delta_clock(loop_start,loop_end);
+        if(clock_counter%100000 == 0 & should_print)
+        {
+            float wasted = 1.0*((float)valid_counter/(float)clock_counter);
+            printf("Den: %.6f\tWasted: %.4f\tDifTest: %.6fs\tdLoop: %.6fs\tdContem: %.6f\tdPush: %.6f\n",
+            current_density,wasted ,delta_different,delta_loop,delta_contem,delta_push);
+            delta_casca = 0.0; delta_loop = 0.0; delta_different = 0.0; delta_contem = 0.0; delta_push = 0.0;
+        }
+        
     }
     printf("Total iterations: %d\n",clock_counter);
+    printf("Total initialization runtime: %.2f s\n",delta_init);
     return g;
 }
 
@@ -199,13 +237,16 @@ ptr_cabecalho_LL listaDeElementos(graph G)
     return elementos_restantes;
 }
 
-int to_txt(int centena, int dezena, int unidade, graph G)
+int to_txt(graph G)
 {
+    int n1,n2,n3;
+    printf("3 dnmeros separados por vírgulas");
+    scanf("%d,%d,%d",&n1,&n2,&n3);
     char file_name[] = "./grafos_em_txt/xxx_grafo.txt";
     int c_index = 16, d_index = 17, u_index = 18;
-    file_name[c_index] = centena+'0';
-    file_name[d_index] = dezena+'0';
-    file_name[u_index] = unidade+'0';
+    file_name[c_index] = n1+'0';
+    file_name[d_index] = n2+'0';
+    file_name[u_index] = n3+'0';
     printf("%s",file_name);
     FILE *f = fopen(file_name,"w");
     if(f ==NULL)

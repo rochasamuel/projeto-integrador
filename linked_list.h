@@ -26,6 +26,7 @@ struct linked_list{
     int id;  // Nome do vértice a que a lista se refere
     ptr_elemento start;  // Vértice inicial da lista
     ptr_elemento end;  // Vértice final da lista
+    int *presentes; //vetor de 0s e 1s com os numeros presentes
 };
 
 
@@ -82,6 +83,7 @@ ptr_elemento popElemento(int target_id, ptr_cabecalho_LL L)
         temp = L->start;
         L->start = temp->next;
         L->number_of_elements--;  // Diminui o comprimento da lista em 1
+        L->presentes[target_id] = 0;
         return temp;
     }
     // Itera sobre a lista para buscar item a ser removido
@@ -93,6 +95,7 @@ ptr_elemento popElemento(int target_id, ptr_cabecalho_LL L)
             ptr_elemento temp = criarElemento();
             temp = current->next;
             current->next = current->next->next;
+            L->presentes[target_id] = 0;
             L->number_of_elements--;
             return temp;
         }
@@ -117,6 +120,7 @@ int pushElemento(int new_id, int new_value, int new_weight, ptr_cabecalho_LL L)
     L->start = new_item;  // E adiciona ele ao início da fila
     L->sum_of_weights += new_item->weight;
     L->number_of_elements++;
+    L->presentes[new_id] = 1;
     return 1;
 }
 
@@ -140,10 +144,16 @@ ptr_elemento elementoAleatorio(ptr_cabecalho_LL L)
 ptr_elemento listaContem(int id, ptr_cabecalho_LL L)
 {
     // Testa se 'id' é pertencente a essa lista de adjacência e retorna o elemento, se não NULL.
-    ptr_elemento current = criarElemento();
-    for(current = L->start; current != NULL; current = current->next)
+    if(L->presentes[id] == 1)
     {
-        if(current->id == id) return current;
+        ptr_elemento current = criarElemento();
+        for(current = L->start; current != NULL;current = current->next)
+        {
+            if(current->id == id)
+            {
+                return current;
+            }
+        }
     }
     return NULL;
 }
