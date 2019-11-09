@@ -22,15 +22,15 @@ forma destrutiva, então não podemos usar o grafo original para não inutilizá
 graph copy_graph(graph G)
 {
     graph copy = (graph)malloc(sizeof(*copy));
-    copy->number_of_elements = G->number_of_elements;
+    copy->n_vertices = G->n_vertices;
     copy->n_links = G->n_links;
-    copy->adjacency_list = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*copy->number_of_elements);
+    copy->adjacency_list = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*copy->n_vertices);
 
     // Populando a lista de adjacência com os headers
     int i;
     for(i = 0; i < G->n_vertices; i++)
     {
-        copy->adjacency_list[i] = copiarLista(G->adjacency_list[i])
+        copy->adjacency_list[i] = copiarLista(G->adjacency_list[i]);
     }
     return copy;
 }
