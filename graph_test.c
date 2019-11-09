@@ -21,5 +21,6 @@ void main(void)
     clock_t end = clock();
 
     double delta = ((double)end-(double)begin)/CLOCKS_PER_SEC;
+    to_txt(3,0,0,g);
     printf("Total runtime: %.2f s\n",delta);
 }
