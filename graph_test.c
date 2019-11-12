@@ -25,5 +25,12 @@ void main(void)
 
     double delta = ((double)end-(double)begin)/CLOCKS_PER_SEC;
     printf("Total runtime: %.2f s\n",delta);
-    to_txt(g);    
+    to_txt(g);
+    int graph_r;
+    printf("Report?\n");
+    scanf("%d",&graph_r);
+    if(graph_r == 1)
+    {
+        graph_report(g);   
+    }    
 }

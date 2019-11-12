@@ -42,12 +42,6 @@ graph create_graph(int n_vertices, float density, int max_weight, int should_pri
         g->adjacency_list[i] = criarCabecalho();  // Ponteiro para lista de adjacência
         g->adjacency_list[i]->number_of_elements = 0;  // Comprimento zero
         g->adjacency_list[i]->id = i;  // Label igual ao índice do vetor
-        g->adjacency_list[i]->presentes = (int*)malloc(sizeof(int)*n_vertices);
-        int k;
-        for(k=0;k<n_vertices;k++)
-        {
-            g->adjacency_list[i]->presentes[k] = 0;
-        }
     }
 
 
@@ -169,14 +163,17 @@ graph create_graph(int n_vertices, float density, int max_weight, int should_pri
         delta_loop += delta_clock(loop_start,loop_end);
         if(clock_counter%100000 == 0 & should_print)
         {
-            float wasted = 1.0*((float)valid_counter/(float)clock_counter);
-            printf("Den: %.6f\tWasted: %.4f\tDifTest: %.6fs\tdLoop: %.6fs\tdContem: %.6f\tdPush: %.6f\n",
-            current_density,wasted ,delta_different,delta_loop,delta_contem,delta_push);
+            clock_t elapsed_end = clock();
+            double elapsed = delta_clock(init_start, elapsed_end);
+            float wasted = 1.0-((float)valid_counter/(float)clock_counter);
+            printf("Elapsed: %.2fs\tDen: %.6f\tWasted: %.7f\tDifTest: %.6fs\tdLoop: %.6fs\tdContem: %.6f\tdPush: %.6f\n",
+            elapsed, current_density,wasted ,delta_different,delta_loop,delta_contem,delta_push);
             delta_casca = 0.0; delta_loop = 0.0; delta_different = 0.0; delta_contem = 0.0; delta_push = 0.0;
         }
         
     }
     printf("Total iterations: %d\n",clock_counter);
+    printf("Total links: %d\n",g->n_links);
     printf("Total initialization runtime: %.2f s\n",delta_init);
     return g;
 }
@@ -219,7 +216,7 @@ void graph_report(graph g)
         int k = 0;
         for(current = g->adjacency_list[i]->start; current != NULL; current = current->next)
         {
-            printf("\t\t#%d: (%d,%d,%d)\n",k+1,current->id, current->value, current->weight);
+            printf("\t\t#%d: (%d,%d)\n",k+1,current->id, current->weight);
             k++;
         }
     }
