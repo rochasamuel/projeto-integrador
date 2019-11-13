@@ -19,7 +19,7 @@ void main(void)
 
     clock_t begin = clock();
 
-    graph g = create_graph(nodes, density, mw, should_print);
+    graph g = preencherGrafo(nodes, density, mw, should_print);
     //graph_report(g);
     clock_t end = clock();
 

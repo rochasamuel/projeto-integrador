@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "linked_list.h"
@@ -108,7 +110,7 @@ ptr_elemento min_pop(ptr_cabecalho_LL Q)
     printf("QLEN->%d",Q->len);
     popped = Q->start;
     printf("Popped:");
-    min_show_element(popped); printf("\n");
+    mostrarElemento(popped); printf("\n");
     Q->start = Q->start->next;
     Q->start->previous = NULL;
     Q->len--;
@@ -125,7 +127,7 @@ ptr_elemento min_pop_by_id(int id, ptr_cabecalho_LL Q)
     ptr_elemento to_pop = create_ptr_elemento();
     /*int i = 0;
     printf("QSTART: %d",i);
-    min_show_element(Q->start);
+    mostrarElemento(Q->start);
     if(Q->start->id == id)
     {
         to_pop = Q->start;
@@ -160,7 +162,7 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
     ptr_elemento doppleganger = popIdLista(newcomer->id,minQ);
     if(doppleganger != NULL)  // Se realmente existir item com ID igual
     {
-        if(newcomer->weight > doppleganger->weight)
+        if(newcomer->total_distance > doppleganger->total_distance)
         {
             newcomer = doppleganger;
             pushListaMinimo(newcomer, minQ);
@@ -175,7 +177,7 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
         previous = current;  // Ele vai carregar o current pra fora do loop
         // Condição de saída diferente. Testa se o PRÓXIMO é nulo, ou seja,
         // se current é o último elemento da lista
-        if(current->weight >= newcomer->weight)
+        if(current->total_distance >= newcomer->total_distance)
         {
             if(current->previous == NULL)
             {
@@ -188,7 +190,7 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
             current->previous = newcomer;
             newcomer->next = current;
             minQ->number_of_elements++;
-            minQ->sum_of_weights += newcomer->weight;
+            minQ->sum_of_weights += newcomer->total_distance;
             return 1;
         }
     }
@@ -198,24 +200,24 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
         newcomer->previous = NULL;
         newcomer->next = NULL;
         minQ->number_of_elements++;
-        minQ->sum_of_weights += newcomer->weight;
+        minQ->sum_of_weights += newcomer->total_distance;
         return 1;
     }
     if(current == NULL && previous->previous == NULL)  // Current é o primeiro da fila
     {
-        if(previous->weight >= newcomer->weight)
+        if(previous->total_distance >= newcomer->total_distance)
         {
             minQ->start = newcomer;
             newcomer->previous = NULL;
             newcomer->next = previous;
             previous->previous = newcomer;
             minQ->number_of_elements++;
-            minQ->sum_of_weights += newcomer->weight;
+            minQ->sum_of_weights += newcomer->total_distance;
             return 1;
         }
     }
     // Caso no qual current é o último da fila, ou seja, saiu do loop acima.
-    if(current->weight >= newcomer->weight)
+    if(current->total_distance >= newcomer->total_distance)
     {
         if(previous == NULL)
         {
@@ -230,7 +232,7 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
         minQ->start = newcomer;  // Caso em que ele é o primeiro da lista
     }
     minQ->number_of_elements++;
-    minQ->sum_of_weights += newcomer->weight;
+    minQ->sum_of_weights += newcomer->total_distance;
     return 1;
     /*if(Q->start == NULL)
     {
@@ -249,7 +251,7 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
         newcomer->previous = NULL;
         newcomer->next = NULL;
 
-            min_show_queue(minQ);
+            mostrarLista(minQ);
         return 0;
     }
     ptr_elemento temp = create_ptr_elemento();
@@ -269,7 +271,7 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
                 Q->start = newcomer;
                 newcomer->previous = NULL;
                 printf("Era o primeiro.\n");
-                min_show_queue(Q);
+                mostrarLista(Q);
                 return 0;
             }
             if(current->next == NULL)
@@ -279,7 +281,7 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
                 printf("\tO anterior do que entra agora é: %d\n",newcomer->previous->id);
                 newcomer->next = current;
                 
-                min_show_queue(Q);
+                mostrarLista(Q);
                 return 0;
             }
 
@@ -288,14 +290,14 @@ int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
             current->previous->next = newcomer;
             printf("Agora o proximo do %d é o %d.\n",newcomer->id, newcomer->next->id);
             newcomer->previous = newcomer;
-            min_show_queue(Q);
+            mostrarLista(Q);
             return 0;
         }
     }
     newcomer->previous = temp->previous;
     temp->previous = newcomer;
     newcomer->next = temp;
-    min_show_queue(Q);
+    mostrarLista(Q);
     return 0;
     */
 }

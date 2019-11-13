@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "priority_queue.h"
@@ -19,6 +21,7 @@ forma destrutiva, então não podemos usar o grafo original para não inutilizá
 
 */
 
+/*
 typedef struct previous *antecessor;
 
 struct previous
@@ -34,7 +37,8 @@ antecessor criarAntecessor()
     ant->elemento_de_origem = -1;
     return ant;    
 }
-
+*/
+/*
 typedef struct antecessores *ptrVetorDeAntecessores;
 
 struct antecessores
@@ -42,21 +46,37 @@ struct antecessores
     int len;
     antecessor *ants;
 };
+*/
 
-ptrVetorDeAntecessores criarVetorDeAntecessores(int nVertices)
+graph criarVetorDeAntecessores(int nVertices)
 {
-    ptrVetorDeAntecessores v = (ptrVetorDeAntecessores)malloc(sizeof(ptrVetorDeAntecessores));
-    v->ants = (antecessor*)malloc(sizeof(antecessor)*nVertices);
-    v->len = nVertices;
+    graph v = esqueletoGrafo(nVertices);
     int i;
     for(i = 0; i< nVertices; i++)
     {
-        v->ants[i] = criarAntecessor();
+        ptr_elemento current = criarElemento();
+        current->id = -1;
+        current->total_distance = 0;
+        current->elemento_de_origem = -1;
+        v->listaDeAdjacencia[i]->start = current;
     }
     return v;
 }
 
-int monstrarVetorDeAntecedentes(ptrVetorDeAntecessores v)
+int mostrarAntecessores(graph v)
+{
+    int i;
+    printf("\tADJs.\n");
+    for(i=0; i< v->nVertices; i++)
+    {
+        mostrarElemento(v->listaDeAdjacencia[i]->start);
+    }
+}
+
+/*
+
+
+int mostrarLista(ptrVetorDeAntecessores v)
 {
     int i;
     for(i = 0; i<v->len;i++)
@@ -64,6 +84,7 @@ int monstrarVetorDeAntecedentes(ptrVetorDeAntecessores v)
         printf("(%d,%d,%d)\n", v->ants[i]->id,v->ants[i]->total_distance,v->ants[i]->elemento_de_origem);
     }
 }
+*/
 
 
 graph copy_graph(graph G)
@@ -98,95 +119,105 @@ int removerDoGrafo(int id, graph G)
 
 void test_run(graph G, int start, int finish)
 {
+    clock_t test_start = clock();
     graph destructable = copy_graph(G);
-    ptrVetorDeAntecessores v = criarVetorDeAntecessores(destructable->nVertices);
+    graph v = criarVetorDeAntecessores(destructable->nVertices);
     ptr_cabecalho_LL start_node = destructable->listaDeAdjacencia[start];
-    ptr_cabecalho_LL Q = criarCabecalho();
+    ptr_cabecalho_LL minQ = criarCabecalho();
     int start_id = destructable->listaDeAdjacencia[start]->id;
-    ptr_elemento M = criarElemento();
+    ptr_elemento minElemento = criarElemento();
     ptr_elemento current_from_queue = criarElemento();
-    M->elemento_de_origem = -1;
-    M->total_distance = 0;
-    M->id = start;
+    minElemento->elemento_de_origem = -1;
+    minElemento->total_distance = 0;
+    minElemento->id = start;
     
-    pushListaMinimo(M, Q);
+    pushListaMinimo(minElemento, minQ);
 
     do
     {
-        min_show_queue(Q);
+        //printf("---->minQ\n");
+        //mostrarLista(minQ);
         ptr_elemento current_from_queue = criarElemento();
-        current_from_queue = min_pop(Q);
-        min_show_element(current_from_queue);
+        current_from_queue = popPrimeiroLista(minQ);
+        //printf("CurFromQ: ");
+        //mostrarElemento(current_from_queue); printf("\n");
         ptr_cabecalho_LL cur_node = destructable->listaDeAdjacencia[current_from_queue->id];
-        printf("Elementos do vertice atual.\n\t");
-        mostrarElementos(cur_node);
+        //printf("\nElementos do vertice atual:\n\t");
+        //mostrarLista(cur_node);
         if(cur_node->id == finish)
         {
             break;
         }
         ptr_elemento current_neighbour = criarElemento();
-        for(current_neighbour = popFirstElemento(cur_node); current_neighbour != NULL; 
-                current_neighbour = popFirstElemento(cur_node))
+        for(current_neighbour = popPrimeiroLista(cur_node); current_neighbour != NULL; 
+                current_neighbour = popPrimeiroLista(cur_node))
             {
-                monstrarVetorDeAntecedentes(v);
-                if(v->ants[current_neighbour->id]->id == -1)  // Testa se é carne fresca no vetor
+                //mostrarAntecessores(v);
+                if(v->listaDeAdjacencia[current_neighbour->id]->start->id == -1)  // Testa se é carne fresca no vetor
                 {
-                    v->ants[current_neighbour->id]->id = current_neighbour->id;
-                    v->ants[current_neighbour->id]->total_distance = current_neighbour->weight;
-                    v->ants[current_neighbour->id]->elemento_de_origem = cur_node->id;
+                    v->listaDeAdjacencia[current_neighbour->id]->id = current_neighbour->id;
+                    v->listaDeAdjacencia[current_neighbour->id]->start->id = current_neighbour->id;
+                    int total_distance = current_neighbour->weight + v->listaDeAdjacencia[cur_node->id]->start->total_distance;
+                    v->listaDeAdjacencia[current_neighbour->id]->start->total_distance = total_distance;
+                    v->listaDeAdjacencia[current_neighbour->id]->start->elemento_de_origem = cur_node->id;
 
-                    ptr_elemento M = criarElemento();
-                    M->elemento_de_origem = current_from_queue->id;
-                    M->total_distance = current_neighbour->weight;
-                    M->id = current_neighbour->id;
-                    pushListaMinimo(M, Q);
-                    printf("Just pushed:");
-                    min_show_element(M);
-                    printf("\n");
+                    // Pra colocar na minQ, já que não existia antes.
+                    ptr_elemento minElemento = criarElemento();
+                    minElemento->elemento_de_origem = current_from_queue->id;
+                    minElemento->total_distance = current_neighbour->weight;
+                    minElemento->id = current_neighbour->id;
+                    pushListaMinimo(minElemento, minQ);
+                    //printf("Just pushed:");
+                    //mostrarElemento(minElemento);
+                    //printf("\n");
                     
-                    popIdLista(cur_node->id, destructable->listaDeAdjacencia[current_neighbour->id]);  // Joga fora o link
+                    removerConexao(cur_node->id, current_neighbour->id,destructable);  // Joga fora o link
                     continue;
                 }
                 else
                 {
-                    printf("Bom, tá tem {%d,%d,%d} aqui.\n",
-                    v->ants[current_neighbour->id]->id,
-                    v->ants[current_neighbour->id]->total_distance,
-                    v->ants[current_neighbour->id]->elemento_de_origem = cur_node->id);
+                    //printf("Bom, tá tem {%d,%d,%d} aqui.\n",
+                    //v->listaDeAdjacencia[current_neighbour->id]->start->id,
+                    //v->listaDeAdjacencia[current_neighbour->id]->start->total_distance,
+                    //v->listaDeAdjacencia[current_neighbour->id]->start->elemento_de_origem);
 
-                    int distancia_candidata = v->ants[cur_node->id]->total_distance + current_neighbour->weight;
-                    printf("\tMinha distancia candidata eh: %d\n",distancia_candidata);
-                    printf("Estando no %d\n",current_neighbour->id);
-                    printf("Passando por %d\n",cur_node->id);
-                    if(distancia_candidata < v->ants[current_neighbour->id]->total_distance)
+                    int distancia_candidata = v->listaDeAdjacencia[cur_node->id]->start->total_distance + current_neighbour->weight;
+                    //printf("\tMinha distancia candidata eh: %d\n",distancia_candidata);
+                    //printf("Cheguei no %d\n",current_neighbour->id);
+                    //printf("Passando por %d\n",cur_node->id);
+                    if(distancia_candidata < v->listaDeAdjacencia[current_neighbour->id]->start->total_distance)
                     {
-                        printf("\tA candidata é melhor! Troquemos.\n");
-                        v->ants[cur_node->id]->total_distance = distancia_candidata;
-                        v->ants[cur_node->id]->elemento_de_origem = current_neighbour->id;
+                        //printf("\tA candidata é melhor! Troquemos.\n");
+                        v->listaDeAdjacencia[current_neighbour->id]->start->total_distance = distancia_candidata;
+                        v->listaDeAdjacencia[current_neighbour->id]->start->elemento_de_origem = cur_node->id;
 
-                        ptr_elemento M = criarElemento();
+                        ptr_elemento minElemento = criarElemento();
 
-                        M->elemento_de_origem = current_neighbour->id;
-                        M->total_distance = distancia_candidata;
-                        M->id = current_neighbour->id;
-                        pushListaMinimo(M, Q);
-                        popIdLista(cur_node->id, destructable->listaDeAdjacencia[current_neighbour->id]);  // Joga fora o link
+                        minElemento->elemento_de_origem = cur_node->id;
+                        minElemento->total_distance = distancia_candidata;
+                        minElemento->id = current_neighbour->id;
+                        pushListaMinimo(minElemento, minQ);
+                        removerConexao(cur_node->id, current_neighbour->id,destructable);  // Joga fora o link
                     }
                 }
             } 
     }while(1 == 1);
+    clock_t test_finish = clock();
     int previous = finish;
-    printf("Começando com prev = %d e start = %d\n",previous,start);
-    monstrarVetorDeAntecedentes(v);
+    //printf("Começando com prev = %d e start = %d\n",previous,start);
     int i;
-    scanf("%d",&i);
+    //mostrarAntecessores(v);
+    printf("Distancia total: %d\n",v->listaDeAdjacencia[finish]->start->total_distance);
     printf("\tCaminho: ");
     while(previous != start)
     {
         printf("%d-",previous);
-        previous = v->ants[previous]->elemento_de_origem;
+        previous = v->listaDeAdjacencia[previous]->start->elemento_de_origem;
     }
     
     printf("%d\n",start);
+    
+    double d = delta_clock(test_start,test_finish);
+    printf("Time to solve: %fs\n",d);
 }
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -60,14 +62,17 @@ ptr_elemento criarElemento(void)
 
 int mostrarElemento(ptr_elemento elemento)
 {
-    printf("[i:%d,w:%d,o:%d]",elemento->id, elemento->weight, elemento->elemento_de_origem);
+    printf("\t[i:%d,w:%d,td:%d,o:%d]\n",elemento->id, 
+                                        elemento->weight, 
+                                        elemento->total_distance,
+                                        elemento->elemento_de_origem);
     return 1;
 }
 
 void mostrarLista(ptr_cabecalho_LL L)
 {
     // Cabeçalho da lista
-    printf("{i:%d,l:%d,w:%d}:",L->id,L->number_of_elements,L->sum_of_weights);
+    printf("{i:%d,l:%d,w:%d}:\n",L->id,L->number_of_elements,L->sum_of_weights);
     // Mostra os elementos da lista de adjacência
     ptr_elemento current = criarElemento();  // Cria um vértice local para receber os valores
     for(current = L->start; current != NULL; current = current->next)

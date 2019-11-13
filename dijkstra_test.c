@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "dijkstra.h"
 
 
@@ -12,8 +13,59 @@
 
 void main(void)
 {
-    graph G = create_graph(6, 0.7, 100, 1);
-    graph_report(G);
+    int seed = time(0);
+    srand(seed);
+    int nVertices = 5000;
+    graph G = esqueletoGrafo(nVertices);
+    //graph_report(G);
+    preencherGrafo(G, 0.5, 100, 1);
+    to_txt(G);
+    //graph_report(G);
     graph destructable = copy_graph(G);
-    test_run(G, 0,6);
+    int i;
+    printf("Can I start?\n");
+    scanf("%d",&i);
+    test_run(destructable, 0,nVertices-1);
+
+   /*
+    graph G = from_text();
+    //graph_report(H);
+    graph destructable2 = copy_graph(G);
+    int start = 1;
+    int finish = 5;
+    printf("de %d a %d\n",start,finish);
+    test_run(destructable2, start,finish);
+
+    G = from_text();
+    //graph_report(H);
+    destructable2 = copy_graph(G);
+    start = 15;
+    finish = 953;
+    printf("de %d a %d\n",start,finish);
+    test_run(destructable2, start,finish);
+
+    G = from_text();
+    //graph_report(H);
+    destructable2 = copy_graph(G);
+    start = 547;
+    finish = 879;
+    printf("de %d a %d\n",start,finish);
+    test_run(destructable2, start,finish);
+
+    G = from_text();
+    //graph_report(H);
+    destructable2 = copy_graph(G);
+    start = 999;
+    finish = 1;
+    printf("de %d a %d\n",start,finish);
+    test_run(destructable2, start,finish);
+
+    G = from_text();
+    //graph_report(H);
+    destructable2 = copy_graph(G);
+    start = 958;
+    finish = 98;
+    printf("de %d a %d\n",start,finish);
+    test_run(destructable2, start,finish);
+   */
 }
