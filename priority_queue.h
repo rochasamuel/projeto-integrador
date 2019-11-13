@@ -1,15 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "linked_list.h"
 
 /*
     DIJKSTRA'S ALGORITHM
 
     Implementação do algoritmo de Dijkstras.
 */
-
-
-
 
 /*
 
@@ -21,26 +18,26 @@ mantendo a ordenação a cada novo elemento inserido. O menor elemento será o
 primeiro elemento da fila, e será o removido assim que foi feito um .pop()
 
 */
-int min_show_element();
-int min_show_queue();
 
-
-typedef struct element_min_priority_queue *min_element;
+/*
+typedef struct element_min_priority_queue *ptr_elemento;
 
 struct element_min_priority_queue{
     int label;
     int distance;
-    int antes;
-    min_element next;
-    min_element previous;
+    int anterior;
+    ptr_elemento next;
+    ptr_elemento previous;
 };
 
-typedef struct min_priority_queue *min_queue;
+typedef struct min_priority_queue *ptr_cabecalho_LL;
 
 struct min_priority_queue{
     int len;
-    min_element start;
+    ptr_elemento start;
 };
+*/
+
 
 /*
 
@@ -48,25 +45,26 @@ struct min_priority_queue{
 
 */
 
-min_element create_min_element(void)
+/*
+ptr_elemento create_ptr_elemento(void)
 {
-    min_element E = (min_element)malloc(sizeof(*E));
-    E->label = -1;
-    E->distance = -1;
-    E->antes = -1;
+    ptr_elemento E = (ptr_elemento)malloc(sizeof(*E));
+    E->id = -1;
+    E->weight = -1;
+    E->elemento_de_origem = -1;
     E->next = NULL;
     E->previous = NULL;
     return E;
 };
 
-min_queue create_min_queue(void)
+ptr_cabecalho_LL criarCabecalho(void)
 {
-    min_queue Q = (min_queue)malloc(sizeof(*Q));
+    ptr_cabecalho_LL Q = (ptr_cabecalho_LL)malloc(sizeof(*Q));
     Q->len = 0;
     Q->start = NULL;
     return Q;
 }
-
+*/
 
 /*
 
@@ -75,19 +73,26 @@ respeitando as peculiaridades de inserção na ordem correta.
 
 */
 
-min_element min_pop(min_queue Q)
+/*
+ptr_elemento min_pop(ptr_cabecalho_LL Q)
 {
     // Retorna o primeiro elemento da fila.
     //se a fila estiver vazia, NULL será retornado.
     printf("popando min.\n");
-    min_element popped = create_min_element();
-    for(popped = Q->start; popped != NULL; popped = popped->next)
+    ptr_elemento popped = create_ptr_elemento();
+    if(Q->start == NULL)
     {
-        Q->start = popped->next;
+        return NULL;
+    }
+    popped = Q->start;
+    Q->start = Q->start->next;
+    if(Q->start == NULL)
+    {
         return popped;
     }
+    Q->start->previous = NULL;
     return popped;
-    /*if(Q->len == 0)
+    if(Q->len == 0)
     {
         printf("QLEN ZERO!\n");
         return NULL;
@@ -107,146 +112,190 @@ min_element min_pop(min_queue Q)
     Q->start = Q->start->next;
     Q->start->previous = NULL;
     Q->len--;
-    return popped;*/
+    return popped;
 }
+*/
 
-min_element min_pop_by_id(int id, min_queue Q)
+/*
+ptr_elemento min_pop_by_id(int id, ptr_cabecalho_LL Q)
 {
     // Retorna o elemento com id da fila.
     //se a fila estiver vazia, NULL será retornado.
     printf("popando id: %d\n",id);
-    min_element popped = create_min_element();
-    int i = 0;
+    ptr_elemento to_pop = create_ptr_elemento();
+    /*int i = 0;
     printf("QSTART: %d",i);
     min_show_element(Q->start);
-    if(Q->start->label == id)
+    if(Q->start->id == id)
     {
-        popped = Q->start;
+        to_pop = Q->start;
         Q->start = Q->start->next;
         Q->start->previous == NULL;
-        return popped;
-    }
-    for(popped = Q->start; popped != NULL; popped = popped->next)
+        return to_pop;
+    }* /
+    for(to_pop = Q->start; to_pop != NULL; to_pop = to_pop->next)
     {
-
-        i++;
-        min_show_element(popped);
-        printf("loop #%d: label: %d",i,popped->label);
-        if(popped->label == id)
+        if(to_pop->id == id)
         {
-            popped->previous->next = popped->next;
-            if(popped->next != NULL)
+            to_pop->previous->next = to_pop->next;
+            if(to_pop->next != NULL)
             {
-                popped->next->previous = popped->previous;
+                to_pop->next->previous = to_pop->previous;
             }
             Q->len--;
-            return popped;
+            return to_pop;
         }
     }
     return NULL;
 }
+*/
 
-int min_push(min_element pushed, min_queue Q)
+int pushListaMinimo(ptr_elemento newcomer, ptr_cabecalho_LL minQ)
 {
-    printf("PUSHING :");
-    min_show_element(pushed);
-    printf("\nInto:");
-    min_show_queue(Q);
-    printf("\n");
-    int target_distance = pushed->distance;
-    min_element current = create_min_element();
-    min_element last_one = create_min_element();
-    if(Q->len == 0)
+    if(newcomer->id == newcomer->elemento_de_origem)
     {
-        Q->start = pushed;
-        Q->len++;
+        printf("\t\tMINQ_ELEMENT SAME SOURCE AND ID.\n");
         return 0;
     }
-    printf("ok, %d not zero.\n",Q->len);
-    for(current = Q->start; current != NULL; current = current->next)
+    ptr_elemento doppleganger = popIdLista(newcomer->id,minQ);
+    if(doppleganger != NULL)  // Se realmente existir item com ID igual
     {
-        printf("Begin pushing\n.");
-        printf("Current: ");
-        min_show_element(current);
-        int cur_dis = current->distance;
-        printf("\nTarget distance: %d\n",target_distance);
-        printf("Current distance: %d\n",cur_dis);
-        if(cur_dis >= target_distance)
+        if(newcomer->weight > doppleganger->weight)
         {
-            printf("Q->len: %d",Q->len);
-            if(Q->len == 1)
-            {
-                printf("Q com len 1.\n");
-                Q->start->previous = pushed;
-                pushed->next = Q->start;
-                Q->start = pushed;
-                Q->len++;
-                return 0;
-            }
-            printf("Current:");
-            min_show_element(current);
-            printf("Pushed: ");
-            min_show_element(pushed);
-            pushed->previous = current->previous;
-            if(current->previous != NULL)
-            {
-                pushed->previous->next = pushed;
-            }
-            else
-            {
-                Q->start = pushed;
-            }
-            
-            pushed->next = current;
-            Q->len++;
-            return 0;
+            newcomer = doppleganger;
+            pushListaMinimo(newcomer, minQ);
+            return 1;
         }
-        printf("Trying last one: ");
-        min_show_element(last_one);
-        printf("\n");
-        last_one = current;
     }
-    last_one->next = pushed;
-    pushed->previous = last_one;
-    Q->len++;
-    return 0;
-}
 
-int is_empty(min_queue Q)
-{
-    if(Q->len == 0)
+    ptr_elemento current = NULL;
+    ptr_elemento previous = NULL;
+    for(current = minQ->start; current != NULL; current = current->next)
     {
+        previous = current;  // Ele vai carregar o current pra fora do loop
+        // Condição de saída diferente. Testa se o PRÓXIMO é nulo, ou seja,
+        // se current é o último elemento da lista
+        if(current->weight >= newcomer->weight)
+        {
+            if(current->previous == NULL)
+            {
+                minQ->start = newcomer;  // Caso em que ele é o primeiro da lista
+            }else
+            {
+                current->previous->next = newcomer;
+            }
+            newcomer->previous = current->previous;
+            current->previous = newcomer;
+            newcomer->next = current;
+            minQ->number_of_elements++;
+            minQ->sum_of_weights += newcomer->weight;
+            return 1;
+        }
+    }
+    if(current == NULL && previous == NULL) // Fila vazia
+    {
+        minQ->start = newcomer;
+        newcomer->previous = NULL;
+        newcomer->next = NULL;
+        minQ->number_of_elements++;
+        minQ->sum_of_weights += newcomer->weight;
         return 1;
     }
-    return 0;
-}
-
-int min_show_element(min_element to_show)
-{
-    if(to_show != NULL)
+    if(current == NULL && previous->previous == NULL)  // Current é o primeiro da fila
     {
-        printf("(%d,%d,%d)",to_show->label,to_show->distance, to_show->antes);
+        if(previous->weight >= newcomer->weight)
+        {
+            minQ->start = newcomer;
+            newcomer->previous = NULL;
+            newcomer->next = previous;
+            previous->previous = newcomer;
+            minQ->number_of_elements++;
+            minQ->sum_of_weights += newcomer->weight;
+            return 1;
+        }
+    }
+    // Caso no qual current é o último da fila, ou seja, saiu do loop acima.
+    if(current->weight >= newcomer->weight)
+    {
+        if(previous == NULL)
+        {
+            // Se previous for NULL, 
+        }
+    }
+    newcomer->previous = previous;
+    previous->next = newcomer;
+    newcomer->next = NULL;
+    if(newcomer->previous == NULL)
+    {
+        minQ->start = newcomer;  // Caso em que ele é o primeiro da lista
+    }
+    minQ->number_of_elements++;
+    minQ->sum_of_weights += newcomer->weight;
+    return 1;
+    /*if(Q->start == NULL)
+    {
+        Q->start = newcomer;
+        Q->len++;
+        return 0;
+    }*/
+    
+    
+    /*
+    printf("Inserting: {%d,%d,%d}\n",newcomer->id,newcomer->weight,newcomer->an);
+    if(minQ->start == NULL)
+    {
+        printf("Q estava vazia.\n");
+        minQ->start = newcomer;
+        newcomer->previous = NULL;
+        newcomer->next = NULL;
+
+            min_show_queue(minQ);
         return 0;
     }
-    printf("Nothing here.\n");
-    return 0;   
-}
-
-int min_show_queue(min_queue Q)
-{
-    printf("Queue: \n");
-    int counter = 1;
-    min_element current = create_min_element();
-    if(Q->len == 0)
-    {
-        printf("Empty queue.\n");
-        return 0;
-    }
+    ptr_elemento temp = create_ptr_elemento();
+    int i=0;
     for(current = Q->start; current != NULL; current = current->next)
     {
-        printf("#%d: ",counter); min_show_element(current); printf("\n");
-        counter++;
-    }
-    return 0;
-}
+        i++;
+        printf("\tComparando com #%d: {%d,%d,%d}\n",i,current->id,current->weight,current->elemento_de_origem);
+        temp = current;
+        printf("\t\t %d >= %d ?\n",current->weight, newcomer->weight);
+        if(current->weight >= newcomer->weight)
+        {
+            if(current->previous == NULL) //Caso no qual o current é o primeiro da fila
+            {
+                newcomer->next = current;
+                current->previous = newcomer;
+                Q->start = newcomer;
+                newcomer->previous = NULL;
+                printf("Era o primeiro.\n");
+                min_show_queue(Q);
+                return 0;
+            }
+            if(current->next == NULL)
+            {
+                current->previous->next = newcomer;
+                newcomer->previous = current->previous;
+                printf("\tO anterior do que entra agora é: %d\n",newcomer->previous->id);
+                newcomer->next = current;
+                
+                min_show_queue(Q);
+                return 0;
+            }
 
+            printf("\t\t\tSim!\n");
+            newcomer->next = current;
+            current->previous->next = newcomer;
+            printf("Agora o proximo do %d é o %d.\n",newcomer->id, newcomer->next->id);
+            newcomer->previous = newcomer;
+            min_show_queue(Q);
+            return 0;
+        }
+    }
+    newcomer->previous = temp->previous;
+    temp->previous = newcomer;
+    newcomer->next = temp;
+    min_show_queue(Q);
+    return 0;
+    */
+}

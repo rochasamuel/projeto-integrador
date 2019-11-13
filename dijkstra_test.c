@@ -12,7 +12,8 @@
 
 void main(void)
 {
-    graph G = create_graph(18, 0.852451231, 10, 1);
+    graph G = create_graph(6, 0.7, 100, 1);
+    graph_report(G);
     graph destructable = copy_graph(G);
-    test_run(G, 0 ,10);    
+    test_run(G, 0,6);
 }
