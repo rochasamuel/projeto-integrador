@@ -27,17 +27,6 @@ float rndWeight(int maxWeight)
     return 1 + (rand() % maxWeight);
 }
 
-<<<<<<< HEAD
-graph create_graph(int n_vertices, float density, int max_weight, int should_print)
-{
-    clock_t creation_start = clock();
-    // Função que retorna struct 'grafo' preenchida com n_vertices e densidade de links = 'density'
-    int i;
-    graph g = (graph)malloc(sizeof(*g));  // Aloca espaço na memória para struct de grafo
-    g->n_vertices = n_vertices;  // Pré-determina número de vértices]
-    g->n_links = 0;  // Número de links é zero porque é incrementado dinamicamente
-    g->adjacency_list = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*n_vertices);
-=======
 graph esqueletoGrafo(int nVertices)
 {
     // Inicialização do grafo, condição mínima de existência
@@ -47,27 +36,14 @@ graph esqueletoGrafo(int nVertices)
     G->nVertices = nVertices;  // Pré-determina número de vértices]
     G->nLinks = 0;  // Número de links é zero porque é incrementado dinamicamente
     G->listaDeAdjacencia = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*nVertices);
->>>>>>> master
     // Cria vetor com tamanho 'v_vertices' de ponteiros para listas de adjacências.
     int i;
     for(i=0; i<nVertices; i++) 
     {
         // Inicializa cada elemento to vetor de listas ligadas
-<<<<<<< HEAD
-        g->adjacency_list[i] = criarCabecalho();  // Ponteiro para lista de adjacência
-        g->adjacency_list[i]->number_of_elements = 0;  // Comprimento zero
-        g->adjacency_list[i]->id = i;  // Label igual ao índice do vetor
-        g->adjacency_list[i]->presentes = (int*)malloc(sizeof(int)*n_vertices);
-        int k;
-        for(k=0;k<n_vertices;k++)
-        {
-            g->adjacency_list[i]->presentes[k] = 0;
-        }
-=======
         G->listaDeAdjacencia[i] = criarCabecalho();  // Ponteiro para lista de adjacência
         G->listaDeAdjacencia[i]->number_of_elements = 0;  // Comprimento zero
         G->listaDeAdjacencia[i]->id = i;  // Label igual ao índice do vetor
->>>>>>> master
     }
     return G;
 }
@@ -157,20 +133,12 @@ graph preencherGrafo(graph G, float density, int maxWeight, int should_print)
         clock_counter++;
         // Pegando dois elementos aleatórios do grafo, pelos ids
         clock_t different_start = clock();
-<<<<<<< HEAD
-        int vertice_1 = rand() % g->n_vertices, vertice_2;
-        do
-        {
-            vertice_2 = rand() % g->n_vertices;
-        } while(vertice_1 == vertice_2);
-=======
         int vertice_1 = rand() % G->nVertices;
         int vertice_2;
         do
         {
             vertice_2 = rand() % G->nVertices;
         } while(vertice_1 == vertice_2);  // Para garantir que eles não são iguais
->>>>>>> master
         clock_t different_end = clock();
         delta_different += delta_clock(different_start,different_end);
         
@@ -178,11 +146,7 @@ graph preencherGrafo(graph G, float density, int maxWeight, int should_print)
         // Testando para ver se eles já não estão ligados
         ptr_elemento cur = criarElemento();
         clock_t contem_start = clock();
-<<<<<<< HEAD
-        if(listaContem(vertice_1, g->adjacency_list[vertice_2]) != NULL)
-=======
-        if(pertenceLista(vertice_1, G->listaDeAdjacencia[vertice_2]) != NULL)
->>>>>>> master
+        if(pertenceLista(vertice_1, G->listaDeAdjacencia[vertice_2]) == 1)
         {
             clock_t contem_end = clock();
             delta_contem += delta_clock(contem_start,contem_end);
@@ -202,20 +166,11 @@ graph preencherGrafo(graph G, float density, int maxWeight, int should_print)
         // Atualizando o numero de links
         clock_t push_end = clock();
         delta_push += delta_clock(push_start, push_end);
-<<<<<<< HEAD
-        current_density = ((float)g->n_links/(float)(max_links))/2.0;
-=======
         current_density = ((double)G->nLinks/(double)(max_links))/2.0;
->>>>>>> master
         clock_t loop_end = clock();
         delta_loop += delta_clock(loop_start,loop_end);
         if(clock_counter%100000 == 0 & should_print)
         {
-<<<<<<< HEAD
-            float wasted = 1.0*((float)valid_counter/(float)clock_counter);
-            printf("Den: %.6f\tWasted: %.4f\tDifTest: %.6fs\tdLoop: %.6fs\tdContem: %.6f\tdPush: %.6f\n",
-            current_density,wasted ,delta_different,delta_loop,delta_contem,delta_push);
-=======
             printf("nLinks: %.1f\n",(double)G->nLinks);
             printf("maxLinks: %.1f\n",(double)(max_links));
             clock_t elapsed_end = clock();
@@ -223,20 +178,14 @@ graph preencherGrafo(graph G, float density, int maxWeight, int should_print)
             float wasted = 1.0-((float)valid_counter/(float)clock_counter);
             printf("Elapsed: %.2fs\tDen: %.6f\tWasted: %.7f\tDifTest: %.6fs\tdLoop: %.6fs\tdContem: %.6f\tdPush: %.6f\n",
             elapsed, current_density,wasted ,delta_different,delta_loop,delta_contem,delta_push);
->>>>>>> master
             delta_casca = 0.0; delta_loop = 0.0; delta_different = 0.0; delta_contem = 0.0; delta_push = 0.0;
         }
         
     }
     printf("Total iterations: %d\n",clock_counter);
-<<<<<<< HEAD
-    printf("Total initialization runtime: %.2f s\n",delta_init);
-    return g;
-=======
     printf("Total links: %d\n",G->nLinks);
     printf("Total initialization runtime: %.2f s\n",delta_init);
     return G;
->>>>>>> master
 }
 
 int removerConexao(int id_A, int id_B, graph G)
@@ -250,7 +199,7 @@ int removerConexao(int id_A, int id_B, graph G)
 
 int adicionarConexao(int id_A, int id_B, int maxWeight, graph G)
 {
-    if(pertenceLista(id_B, G->listaDeAdjacencia[id_A]) != NULL)
+    if(pertenceLista(id_B, G->listaDeAdjacencia[id_A]) == 1)
     {
         return 0;
     }
@@ -334,42 +283,6 @@ int to_txt(graph G,int n1,int n2,int n3)
     return 0;
 }
 
-<<<<<<< HEAD
-int to_txt(graph G)
-{
-    int n1,n2,n3;
-    printf("3 dnmeros separados por vírgulas");
-    scanf("%d,%d,%d",&n1,&n2,&n3);
-    char file_name[] = "./grafos_em_txt/xxx_grafo.txt";
-    int c_index = 16, d_index = 17, u_index = 18;
-    file_name[c_index] = n1+'0';
-    file_name[d_index] = n2+'0';
-    file_name[u_index] = n3+'0';
-    printf("%s",file_name);
-    FILE *f = fopen(file_name,"w");
-    if(f ==NULL)
-    {
-        printf("Deu ruim!\n");
-        return 0;
-    }
-
-    int i;
-    for(i=0; i < G->n_vertices; i++)
-    {
-        int origem = G->adjacency_list[i]->id;
-        ptr_elemento current = criarElemento();
-        for(current = G->adjacency_list[i]->start;
-            current != NULL; 
-            current = current ->next)
-            {
-                int destino = current->id;
-                int peso = current->weight;
-                fprintf(f, "%d,%d,%d\n",origem,destino,peso);
-            }
-    }
-    fclose(f);
-    return 0;
-=======
 
 graph from_text(void)
 {
@@ -396,5 +309,4 @@ graph from_text(void)
         G->nLinks++;
     }
     return G;
->>>>>>> master
 }

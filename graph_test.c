@@ -19,19 +19,12 @@ void main(void)
 
     clock_t begin = clock();
 
-<<<<<<< HEAD
-    graph g = create_graph(nodes, density, mw, should_print);
-=======
     graph g = preencherGrafo(nodes, density, mw, should_print);
->>>>>>> master
     //graph_report(g);
     clock_t end = clock();
 
     double delta = ((double)end-(double)begin)/CLOCKS_PER_SEC;
     printf("Total runtime: %.2f s\n",delta);
-<<<<<<< HEAD
-    to_txt(g);    
-=======
     to_txt(g);
     int graph_r;
     printf("Report?\n");
@@ -40,5 +33,4 @@ void main(void)
     {
         graph_report(g);   
     }    
->>>>>>> master
 }

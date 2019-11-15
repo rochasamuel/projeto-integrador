@@ -140,17 +140,7 @@ ptr_elemento popPrimeiroLista(ptr_cabecalho_LL L)
         L->start = primeiro_da_lista->next;
         if(L->start != NULL)  // Testa se a lista agora é vazia
         {
-<<<<<<< HEAD
-            L->sum_of_weights -= L->start->weight;
-            ptr_elemento temp = criarElemento();
-            temp = current->next;
-            current->next = current->next->next;
-            L->presentes[target_id] = 0;
-            L->number_of_elements--;
-            return temp;
-=======
             L->start->previous = NULL;  // Se fosse único não teria 'previous'
->>>>>>> master
         }
     }
     return primeiro_da_lista;
@@ -172,16 +162,9 @@ int pushLista(int new_id, int new_weight, ptr_cabecalho_LL L)
     {
         new_item->next->previous = new_item;  // Se existir next, liga ao atual via 'previous'
     }
-<<<<<<< HEAD
-    L->start = new_item;  // E adiciona ele ao início da fila
-    L->sum_of_weights += new_item->weight;
-    L->number_of_elements++;
-    L->presentes[new_id] = 1;
-=======
     L->start = new_item;
     L->sum_of_weights += new_item->weight;  // Atualiza o total do peso da lista
     L->number_of_elements++;  // Adiciona mais um ao número de elementos da lista
->>>>>>> master
     return 1;
 }
 
@@ -207,24 +190,12 @@ ptr_elemento elementoAleatorio(ptr_cabecalho_LL L)
 int pertenceLista(int id, ptr_cabecalho_LL L)
 {
     // Testa se 'id' é pertencente a essa lista de adjacência e retorna o elemento, se não NULL.
-<<<<<<< HEAD
-    if(L->presentes[id] == 1)
-    {
-        ptr_elemento current = criarElemento();
-        for(current = L->start; current != NULL;current = current->next)
-        {
-            if(current->id == id)
-            {
-                return current;
-            }
-=======
     ptr_elemento current = criarElemento();
     for(current = L->start; current != NULL;current = current->next)
     {
         if(current->id == id)
         {
             return 1;
->>>>>>> master
         }
     }
     return 0;

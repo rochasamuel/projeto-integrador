@@ -90,25 +90,15 @@ int mostrarLista(ptrVetorDeAntecessores v)
 graph copy_graph(graph G)
 {
     graph copy = (graph)malloc(sizeof(*copy));
-<<<<<<< HEAD
-    copy->n_vertices = G->n_vertices;
-    copy->n_links = G->n_links;
-    copy->adjacency_list = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*copy->n_vertices);
-=======
     copy->nVertices = G->nVertices;
     copy->nLinks = G->nLinks;
     copy->listaDeAdjacencia = (ptr_cabecalho_LL*)malloc(sizeof(ptr_cabecalho_LL)*copy->nVertices);
->>>>>>> master
 
     // Populando a lista de adjacência com os headers
     int i;
     for(i = 0; i < G->nVertices; i++)
     {
-<<<<<<< HEAD
-        copy->adjacency_list[i] = copiarLista(G->adjacency_list[i]);
-=======
         copy->listaDeAdjacencia[i] = copiarLista(G->listaDeAdjacencia[i]);
->>>>>>> master
     }
     return copy;
 }
@@ -127,7 +117,7 @@ int removerDoGrafo(int id, graph G)
 }
 */
 
-void test_run(graph G, int start, int finish)
+void test_run(graph G, int start, int finish, FILE *f)
 {
     clock_t test_start = clock();
     graph destructable = copy_graph(G);
@@ -217,17 +207,18 @@ void test_run(graph G, int start, int finish)
     //printf("Começando com prev = %d e start = %d\n",previous,start);
     int i;
     //mostrarAntecessores(v);
+    double d = delta_clock(test_start,test_finish);
+    printf("Time to solve: %fs\n",d);
     printf("Distancia total: %d\n",v->listaDeAdjacencia[finish]->start->total_distance);
-    printf("\tCaminho: ");
+    fprintf(f, "%f,%d,",d,v->listaDeAdjacencia[finish]->start->total_distance);
     while(previous != start)
     {
         printf("%d|",previous);
+        fprintf(f,"%d|",previous);
         previous = v->listaDeAdjacencia[previous]->start->elemento_de_origem;
     }
-    
+    fprintf(f,"%d\n",start);    
     printf("%d\n",start);
     
-    double d = delta_clock(test_start,test_finish);
-    printf("Time to solve: %fs\n",d);
 } //segundos,distancia_total,caminho
 

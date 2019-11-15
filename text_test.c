@@ -5,31 +5,11 @@
 
 void main(void)
 {
-    char clean_buffer[1000];
-    int value = 0;
-    int graph_index = 0;
-    FILE *f;
-    int to_push;
-    f = fopen("values.txt","r");
-    char sep = ',';
-    char justread;
-    char * buffer = clean_buffer;
-    while(justread = fgetc(f) != EOF)
-    {
-        
-        if(justread == '\n')
-        {
-            graph_index++;
-        }
-        if(justread == sep)
-        {
-            sscanf(buffer, &to_push);
-            push_at_start(to_push, graph[graph_index]);
-            buffer = clean_buffer;
-        }
-        strcat(buffer, &justread,1);
-    }
-    fclose(f);
+    int contador_global = 2;
+    int centena = 0, dezena = 0, unidade = 0;
+    unidade = contador_global%10;
+    dezena = (contador_global%100)/10;
+    centena = (contador_global%1000)/100;
 
-    show_list(graph[1]);
+    printf("%d,%d,%d",centena,dezena,unidade);
 }

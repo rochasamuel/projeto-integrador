@@ -20,25 +20,32 @@ void main(void)
     FILE *report = fopen("report.txt","w");
     const char *colunas = "grafo,vertices,densidade,maxweight,segundos,distancia_total,caminho\n";
     fprintf(report,"%s",colunas);
-    for(nVertices = 100; nVertices < 5000; nVertices+= 250)
+    int contador_global = 0;
+    for(nVertices = 100; nVertices <= 1000; nVertices+= 100)
     {
         graph G = esqueletoGrafo(nVertices);
         //graph_report(G);
         int maxWeight;
         float density;
-        for(maxWeight=0;maxWeight!=100;maxWeight=100)
+        for(maxWeight=0;maxWeight<=200;maxWeight+=100)
         {
-            for(density=0;density <= 0.8;density+=0.2)
+            for(density=0;density <= 0.8;density+=0.15)
             {
+                contador_global++;
+                unidade = contador_global%10;
+                dezena = (contador_global%100)/10;
+                centena = (contador_global%1000)/100;
                 preencherGrafo(G, density, maxWeight, 0);
                 to_txt(G,centena,dezena,unidade);
                 //graph_report(G);
+                fprintf(report, "%d,%d,%f,%d,",contador_global,nVertices,density,maxWeight);
                 graph destructable = copy_graph(G);
-                test_run(destructable, 0,nVertices-1);
+                test_run(destructable, 0,nVertices-1,report);
             }
         }
         
-    }    
+    }
+    fclose(report);
         
 
    /*
