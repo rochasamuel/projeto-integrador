@@ -135,9 +135,6 @@ void test_run(graph G, int start, int finish, FILE *f)
     int global_counter = 0;
     do
     {
-        global_counter++;
-        if(global_counter%1000000 == 0) {printf(".");}
-        //printf("---->minQ\n");
         //mostrarLista(minQ);
         ptr_elemento current_from_queue = criarElemento();
         current_from_queue = popPrimeiroLista(minQ);
@@ -178,15 +175,10 @@ void test_run(graph G, int start, int finish, FILE *f)
                 }
                 else
                 {
-                    //printf("Bom, tá tem {%d,%d,%d} aqui.\n",
-                    //v->listaDeAdjacencia[current_neighbour->id]->start->id,
-                    //v->listaDeAdjacencia[current_neighbour->id]->start->total_distance,
-                    //v->listaDeAdjacencia[current_neighbour->id]->start->elemento_de_origem);
-
                     int distancia_candidata = v->listaDeAdjacencia[cur_node->id]->start->total_distance + current_neighbour->weight;
-                    //printf("\tMinha distancia candidata eh: %d\n",distancia_candidata);
-                    //printf("Cheguei no %d\n",current_neighbour->id);
-                    //printf("Passando por %d\n",cur_node->id);
+                    /*printf("\tMinha distancia candidata eh: %d\n",distancia_candidata);
+                    printf("Cheguei no %d\n",current_neighbour->id);
+                    printf("Passando por %d\n",cur_node->id);*/
                     if(distancia_candidata < v->listaDeAdjacencia[current_neighbour->id]->start->total_distance)
                     {
                         //printf("\tA candidata é melhor! Troquemos.\n");

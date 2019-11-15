@@ -275,8 +275,6 @@ int to_txt(graph G,int n1,int n2,int n3)
             current != NULL; 
             current = current ->next)
             {
-                i++;
-                if(i%100 == 0){printf(":~~~~:");}
                 int destino = current->id;
                 int peso = current->weight;
                 fprintf(f, "%d,%d,%d\n",origem,destino,peso);

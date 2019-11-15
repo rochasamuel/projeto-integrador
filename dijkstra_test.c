@@ -14,34 +14,38 @@
 void main(void)
 {
     int nVertices;    
-    
+    int seed = time(0);
+    srand(seed);
     int centena = 0, dezena = 0, unidade = 0;
-    FILE *report = fopen("./grafos_em_txt/report.txt","w");
+    FILE *report = fopen("./grafos_em_txt/A report.txt","w");
     const char *colunas = "grafo,vertices,densidade,maxweight,segundos,distancia_total,caminho\n";
+    fclose(report);
     fprintf(report,"%s",colunas);
     int contador_global = 0;
     int maxWeight;
     float density;
-    for(nVertices = 100; nVertices <= 1000; nVertices+= 100)
+    graph G;
+    for(nVertices = 700; nVertices <=1000; nVertices+= 100)
     {//graph_report(G);
-        for(maxWeight=0;maxWeight<=200;maxWeight+=100)
+        for(maxWeight=100;maxWeight<=200;maxWeight+=100)
         {
-            for(density=0;density <= 0.8;density+=0.1)
+            for(density=0.2;density < 0.8;density+=0.1)
             {
-                int seed = time(0);
-                srand(seed);
+                
                 contador_global++;
                 unidade = contador_global%10;
                 dezena = (contador_global%100)/10;
                 centena = (contador_global%1000)/100;
-                graph G = esqueletoGrafo(nVertices);
+                G = esqueletoGrafo(nVertices);
                 preencherGrafo(G, density, maxWeight, 1);
                 printf("Gonna write now.\n");
                 to_txt(G,centena,dezena,unidade);
                 //graph_report(G);
+                FILE *report = fopen("./grafos_em_txt/A report.txt","a");
                 fprintf(report, "%d,%d,%f,%d,",contador_global,nVertices,density,maxWeight);
                 graph destructable = copy_graph(G);
                 test_run(destructable, 0,nVertices-1,report);
+                fclose(report);
             }
         }
     }
