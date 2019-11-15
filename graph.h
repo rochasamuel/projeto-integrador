@@ -169,7 +169,7 @@ graph preencherGrafo(graph G, float density, int maxWeight, int should_print)
         current_density = ((double)G->nLinks/(double)(max_links))/2.0;
         clock_t loop_end = clock();
         delta_loop += delta_clock(loop_start,loop_end);
-        if(clock_counter%100000 == 0 & should_print == 1)
+        if(clock_counter%100000 == 0)
         {
             printf("nLinks: %.1f\n",(double)G->nLinks);
             printf("maxLinks: %.1f\n",(double)(max_links));
@@ -252,7 +252,7 @@ int to_txt(graph G,int n1,int n2,int n3)
     file_name[c_index] = n1+'0';
     file_name[d_index] = n2+'0';
     file_name[u_index] = n3+'0';
-    printf("%s",file_name);
+    printf("%s\n",file_name);
     FILE *f = fopen(file_name,"w");
     if(f ==NULL)
     {
@@ -268,17 +268,21 @@ int to_txt(graph G,int n1,int n2,int n3)
             fprintf(f, "%d\n",G->nVertices);
             continue;
         }
+        
         int origem = G->listaDeAdjacencia[i]->id;
         ptr_elemento current = criarElemento();
         for(current = G->listaDeAdjacencia[i]->start;
             current != NULL; 
             current = current ->next)
             {
+                i++;
+                if(i%100 == 0){printf(":~~~~:");}
                 int destino = current->id;
                 int peso = current->weight;
                 fprintf(f, "%d,%d,%d\n",origem,destino,peso);
             }
     }
+    printf("\n");
     fclose(f);
     return 0;
 }

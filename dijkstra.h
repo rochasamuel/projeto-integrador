@@ -132,9 +132,11 @@ void test_run(graph G, int start, int finish, FILE *f)
     minElemento->id = start;
     
     pushListaMinimo(minElemento, minQ);
-
+    int global_counter = 0;
     do
     {
+        global_counter++;
+        if(global_counter%1000000 == 0) {printf(".");}
         //printf("---->minQ\n");
         //mostrarLista(minQ);
         ptr_elemento current_from_queue = criarElemento();
