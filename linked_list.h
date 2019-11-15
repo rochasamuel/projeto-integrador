@@ -51,7 +51,13 @@ ptr_cabecalho_LL criarCabecalho(void)
 ptr_elemento criarElemento(void)
 {
     // Cria um vértice para lista de adjacẽncia
-    ptr_elemento new_item = (ptr_elemento)malloc(sizeof(*new_item));  // Alocação de memória
+    ptr_elemento new_item;
+    do
+    {
+        new_item = (ptr_elemento)malloc(sizeof(*new_item));  // Alocação de memória
+    } while (new_item == NULL);
+    
+    
     new_item->next = NULL; // Ponteiro para o próximo vértice na lista de adjacẽnca
     new_item->previous = NULL;  // Ponteiro para o vértice anterior na lista de adjacência
     new_item->id = -1;  // Nome do vértice

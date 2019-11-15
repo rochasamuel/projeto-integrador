@@ -25,11 +25,11 @@ void main(void)
     int maxWeight;
     float density;
     graph G;
-    for(nVertices = 700; nVertices <=1000; nVertices+= 100)
+    for(nVertices = 500; nVertices <=5000; nVertices+= 100)
     {//graph_report(G);
-        for(maxWeight=100;maxWeight<=200;maxWeight+=100)
+        for(maxWeight=0;maxWeight<=200;maxWeight+=100)
         {
-            for(density=0.2;density < 0.8;density+=0.1)
+            for(density=0.2;density < 0.8;density+=0.05)
             {
                 
                 contador_global++;
@@ -45,7 +45,7 @@ void main(void)
                 fprintf(report, "%d,%d,%f,%d,",contador_global,nVertices,density,maxWeight);
                 graph destructable = copy_graph(G);
                 test_run(destructable, 0,nVertices-1,report);
-                fclose(report);
+                fclose(report);printf("V:%d\tD:%.2f\tW:%d\t\n",nVertices,density,maxWeight);
             }
         }
     }
