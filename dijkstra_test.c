@@ -16,7 +16,7 @@ void main(void)
     int nVertices;    
     
     int centena = 0, dezena = 0, unidade = 0;
-    FILE *report = fopen("report.txt","w");
+    FILE *report = fopen("grafos_em_txt/report.txt","w");
     const char *colunas = "grafo,vertices,densidade,maxweight,segundos,distancia_total,caminho\n";
     fprintf(report,"%s",colunas);
     int contador_global = 0;
