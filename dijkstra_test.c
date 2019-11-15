@@ -35,7 +35,7 @@ void main(void)
                 dezena = (contador_global%100)/10;
                 centena = (contador_global%1000)/100;
                 graph G = esqueletoGrafo(nVertices);
-                preencherGrafo(G, density, maxWeight, 0);
+                preencherGrafo(G, density, maxWeight, 1);
                 to_txt(G,centena,dezena,unidade);
                 //graph_report(G);
                 fprintf(report, "%d,%d,%f,%d,",contador_global,nVertices,density,maxWeight);

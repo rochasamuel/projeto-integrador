@@ -169,7 +169,7 @@ graph preencherGrafo(graph G, float density, int maxWeight, int should_print)
         current_density = ((double)G->nLinks/(double)(max_links))/2.0;
         clock_t loop_end = clock();
         delta_loop += delta_clock(loop_start,loop_end);
-        if(clock_counter%100000 == 0 & should_print)
+        if(clock_counter%100000 == 0 & should_print == 1)
         {
             printf("nLinks: %.1f\n",(double)G->nLinks);
             printf("maxLinks: %.1f\n",(double)(max_links));
