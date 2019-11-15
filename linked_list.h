@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -9,8 +11,10 @@ typedef struct list_item *ptr_elemento;
 //Definindo um item da lista de adjacência
 struct list_item{
     int id;  // Nome do vértice
-    int value;  // Valor do vértice
+    //int value;  // Valor do vértice
     int weight;  // Peso da conexão ao vértice
+    int elemento_de_origem; // Atributo específico para uso pela priority_queue
+    int total_distance; // Atributo específico para uso pela priority_queue
     ptr_elemento next; // Ponteiro pro próximo vértice na lista
     ptr_elemento previous;  // Ponteiro pro vértice anterior na lista
 };
@@ -38,7 +42,7 @@ ptr_cabecalho_LL criarCabecalho(void)
     ptr_cabecalho_LL L = (ptr_cabecalho_LL)malloc(sizeof(*L));  // Alocação de memória
     L->number_of_elements = 0;  // Tamanho da lista
     L->sum_of_weights = 0;  // Soma de todos os pesos
-    L->id = 0;  // Nome do vértice a que a lista se refere
+    L->id = -1;  // Nome do vértice a que a lista se refere
     L->start = NULL; // Endereço do primeiro vértice da lista de adjacência
     L->end = NULL;  // Endereço do último vértice da lista de adjacência
     return L;
@@ -50,33 +54,52 @@ ptr_elemento criarElemento(void)
     ptr_elemento new_item = (ptr_elemento)malloc(sizeof(*new_item));  // Alocação de memória
     new_item->next = NULL; // Ponteiro para o próximo vértice na lista de adjacẽnca
     new_item->previous = NULL;  // Ponteiro para o vértice anterior na lista de adjacência
-    new_item->id = 0;  // Nome do vértice
-    new_item->value = 0;  // Valor do vértice
-    new_item->weight = 0;  // Peso para conexão a este vértice nessa lista
+    new_item->id = -1;  // Nome do vértice
+    new_item->elemento_de_origem = -1;  // Atributo exclusivo para priority_queue;
+    //new_item->value = 0;  // Valor do vértice
+    new_item->weight = -1;  // Peso para conexão a este vértice nessa lista
     return new_item;
 }
 
-void mostrarElementos(ptr_cabecalho_LL L)
+int mostrarElemento(ptr_elemento elemento)
 {
+    printf("\t[i:%d,w:%d,td:%d,o:%d]\n",elemento->id, 
+                                        elemento->weight, 
+                                        elemento->total_distance,
+                                        elemento->elemento_de_origem);
+    return 1;
+}
+
+void mostrarLista(ptr_cabecalho_LL L)
+{
+    // Cabeçalho da lista
+    printf("{i:%d,l:%d,w:%d}:\n",L->id,L->number_of_elements,L->sum_of_weights);
     // Mostra os elementos da lista de adjacência
-    printf("L: -");
     ptr_elemento current = criarElemento();  // Cria um vértice local para receber os valores
     for(current = L->start; current != NULL; current = current->next)
     // For loop que itera sobre a lista toda
     // esse loop é usado diversas vezes.
     {
         // Printa 3-upla para cada item, com id, value e weight
-        printf("(%d,%d,%d)-",current->id, current->value, current->weight);
+        mostrarElemento(current);
     }
-    printf("\n");
+    printf("[]\n");
 }
 
-ptr_elemento popElemento(int target_id, ptr_cabecalho_LL L)
+ptr_elemento popIdLista(int target_id, ptr_cabecalho_LL L)
 {
+    /*if(L->number_of_elements == 0)
+    {
+        return NULL;
+    }*/
+
     // Remove o item de id 'target_id' da lista de adjacência
+
     ptr_elemento current = criarElemento();
+    
     // Testando para o caso no qual o primeiro ptr_elemento da lista já é nosso alvo
-    if(L->start->value == target_id)
+    
+    /*if(L->start->value == target_id)
     {
         L->sum_of_weights -= L->start->weight;
         ptr_elemento temp = criarElemento();
@@ -85,12 +108,39 @@ ptr_elemento popElemento(int target_id, ptr_cabecalho_LL L)
         L->number_of_elements--;  // Diminui o comprimento da lista em 1
         L->presentes[target_id] = 0;
         return temp;
-    }
+    }*/
+
     // Itera sobre a lista para buscar item a ser removido
     for(current = L->start; current != NULL; current = current->next)
     {
-        if(current->next->value == target_id)
+        if(current->id == target_id)  // Se encontra o item com o ID alvo
         {
+            L->sum_of_weights -= current->weight;  //Remove o peso do item removido do total
+            if(current->previous != NULL)  // Testa se o current não é o primeiro da fila
+            {                              // porque se for não tem um 'previous'
+                current->previous->next = current->next; // Se pula com o 'next'
+            }
+            if(current->next != NULL)  // Testa se não é o último da fila
+            {                          // porque o último não tem 'next'
+                current->next->previous = current->previous;
+            }
+            L->number_of_elements--;  // Tira 1 do número de elementos da lista;
+            return current;
+        }
+    }
+    return NULL; // Caso não encontre o ID
+}
+
+ptr_elemento popPrimeiroLista(ptr_cabecalho_LL L)
+{
+    ptr_elemento primeiro_da_lista = criarElemento();
+    primeiro_da_lista = L->start;  // Já coloca o primeiro no dummy
+    if(primeiro_da_lista != NULL)  // Se não for lista vazia
+    {
+        L->start = primeiro_da_lista->next;
+        if(L->start != NULL)  // Testa se a lista agora é vazia
+        {
+<<<<<<< HEAD
             L->sum_of_weights -= L->start->weight;
             ptr_elemento temp = criarElemento();
             temp = current->next;
@@ -98,32 +148,44 @@ ptr_elemento popElemento(int target_id, ptr_cabecalho_LL L)
             L->presentes[target_id] = 0;
             L->number_of_elements--;
             return temp;
+=======
+            L->start->previous = NULL;  // Se fosse único não teria 'previous'
+>>>>>>> master
         }
     }
-    return NULL;
+    return primeiro_da_lista;
 }
 
-int pushElemento(int new_id, int new_value, int new_weight, ptr_cabecalho_LL L)
+
+int pushLista(int new_id, int new_weight, ptr_cabecalho_LL L)
 {
     // Adiciona vértice à lista de adjacência
     int i;
     ptr_elemento new_item = criarElemento();  // Cria novo vértice....
-    new_item->value = new_value;
     new_item->id = new_id;
     new_item->weight = new_weight;  // ... e preenche os valores informados
-    new_item->next = L->start;
-    new_item->previous = NULL;
-    if(L->number_of_elements > 0) // Só precisa reescrever o 'anterior' do primeiro item se houver um primeiro item
+
+    // Começa a operar sobre a lista
+    new_item->next = L->start;  // Coloca o new_item pra apontar pro primeiro da lista
+    new_item->previous = NULL;  //Previous NULL pois é o primeiro da lista
+    if(new_item->next != NULL) // Só precisa reescrever o 'anterior' do primeiro item se houver um primeiro item
     {
-        L->start->previous = new_item;
+        new_item->next->previous = new_item;  // Se existir next, liga ao atual via 'previous'
     }
+<<<<<<< HEAD
     L->start = new_item;  // E adiciona ele ao início da fila
     L->sum_of_weights += new_item->weight;
     L->number_of_elements++;
     L->presentes[new_id] = 1;
+=======
+    L->start = new_item;
+    L->sum_of_weights += new_item->weight;  // Atualiza o total do peso da lista
+    L->number_of_elements++;  // Adiciona mais um ao número de elementos da lista
+>>>>>>> master
     return 1;
 }
 
+/*
 ptr_elemento elementoAleatorio(ptr_cabecalho_LL L)
 {
     // Retorna membro aleatório da lista ligada, ou NULL se não houver.
@@ -140,10 +202,12 @@ ptr_elemento elementoAleatorio(ptr_cabecalho_LL L)
     }
     return current;
 }
+*/
 
-ptr_elemento listaContem(int id, ptr_cabecalho_LL L)
+int pertenceLista(int id, ptr_cabecalho_LL L)
 {
     // Testa se 'id' é pertencente a essa lista de adjacência e retorna o elemento, se não NULL.
+<<<<<<< HEAD
     if(L->presentes[id] == 1)
     {
         ptr_elemento current = criarElemento();
@@ -153,23 +217,33 @@ ptr_elemento listaContem(int id, ptr_cabecalho_LL L)
             {
                 return current;
             }
+=======
+    ptr_elemento current = criarElemento();
+    for(current = L->start; current != NULL;current = current->next)
+    {
+        if(current->id == id)
+        {
+            return 1;
+>>>>>>> master
         }
     }
-    return NULL;
+    return 0;
 }
 
 ptr_cabecalho_LL copiarLista(ptr_cabecalho_LL L)
 {
     ptr_cabecalho_LL copia = criarCabecalho();
-    copia->id = L->id;
+    copia->id = L->id;  // Copia o id da Lista de origem
     ptr_elemento current = criarElemento();
     for(current = L->start; current != NULL; current = current->next)
     {
-        pushElemento(current->id, current->value, current->weight, copia);
+        // A cada elemento não-NULL copia o ID e o peso;
+        pushLista(current->id, current->weight, copia);
     }
     return copia;
 }
 
+/*
 int removerLoops(ptr_cabecalho_LL L)
 {
     // Vou usar os atributos da lista ligada já definida de uma forma um pouco diferente.
@@ -182,7 +256,7 @@ int removerLoops(ptr_cabecalho_LL L)
     for(current = L->start; current != NULL; current = current->next)
     {
         printf("Vendo se %d esta na lista acima...\n",current->id);
-        ptr_elemento antecessor = listaContem(current->id, arvore); //currentID está na árvore?
+        ptr_elemento antecessor = pertenceLista(current->id, arvore); //currentID está na árvore?
         if(antecessor != NULL) // Se não é NULL, está!
         {
             loops_found++;
@@ -196,10 +270,11 @@ int removerLoops(ptr_cabecalho_LL L)
         }
         else
         {
-            pushElemento(current->id,current->value, current->weight, arvore);
+            pushLista(current->id,current->value, current->weight, arvore);
             printf("Minha arvore atual.\n");
             mostrarElementos(arvore);
         }
     }
     return 1;
 }
+*/
