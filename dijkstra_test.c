@@ -13,19 +13,33 @@
 
 void main(void)
 {
+    int nVertices;    
     int seed = time(0);
     srand(seed);
-    int nVertices = 5000;
-    graph G = esqueletoGrafo(nVertices);
-    //graph_report(G);
-    preencherGrafo(G, 0.5, 100, 1);
-    to_txt(G);
-    //graph_report(G);
-    graph destructable = copy_graph(G);
-    int i;
-    printf("Can I start?\n");
-    scanf("%d",&i);
-    test_run(destructable, 0,nVertices-1);
+    int centena = 0, dezena = 0, unidade = 0;
+    FILE *report = fopen("report.txt","w");
+    const char *colunas = "grafo,vertices,densidade,maxweight,segundos,distancia_total,caminho\n";
+    fprintf(report,"%s",colunas);
+    for(nVertices = 100; nVertices < 5000; nVertices+= 250)
+    {
+        graph G = esqueletoGrafo(nVertices);
+        //graph_report(G);
+        int maxWeight;
+        float density;
+        for(maxWeight=0;maxWeight!=100;maxWeight=100)
+        {
+            for(density=0;density <= 0.8;density+=0.2)
+            {
+                preencherGrafo(G, density, maxWeight, 0);
+                to_txt(G,centena,dezena,unidade);
+                //graph_report(G);
+                graph destructable = copy_graph(G);
+                test_run(destructable, 0,nVertices-1);
+            }
+        }
+        
+    }    
+        
 
    /*
     graph G = from_text();

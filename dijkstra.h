@@ -211,7 +211,7 @@ void test_run(graph G, int start, int finish)
     printf("\tCaminho: ");
     while(previous != start)
     {
-        printf("%d-",previous);
+        printf("%d|",previous);
         previous = v->listaDeAdjacencia[previous]->start->elemento_de_origem;
     }
     
@@ -219,5 +219,5 @@ void test_run(graph G, int start, int finish)
     
     double d = delta_clock(test_start,test_finish);
     printf("Time to solve: %fs\n",d);
-}
+} //segundos,distancia_total,caminho
 

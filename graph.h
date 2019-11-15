@@ -245,11 +245,8 @@ ptr_cabecalho_LL listaDeElementos(graph G)
 }
 */
 
-int to_txt(graph G)
+int to_txt(graph G,int n1,int n2,int n3)
 {
-    int n1,n2,n3;
-    printf("3 dnmeros separados por vírgulas");
-    scanf("%d,%d,%d",&n1,&n2,&n3);
     char file_name[] = "./grafos_em_txt/xxx_grafo.txt";
     int c_index = 16, d_index = 17, u_index = 18;
     file_name[c_index] = n1+'0';
