@@ -14,27 +14,27 @@
 void main(void)
 {
     int nVertices;    
-    int seed = time(0);
-    srand(seed);
+    
     int centena = 0, dezena = 0, unidade = 0;
     FILE *report = fopen("report.txt","w");
     const char *colunas = "grafo,vertices,densidade,maxweight,segundos,distancia_total,caminho\n";
     fprintf(report,"%s",colunas);
     int contador_global = 0;
+    int maxWeight;
+    float density;
     for(nVertices = 100; nVertices <= 1000; nVertices+= 100)
-    {
-        graph G = esqueletoGrafo(nVertices);
-        //graph_report(G);
-        int maxWeight;
-        float density;
+    {//graph_report(G);
         for(maxWeight=0;maxWeight<=200;maxWeight+=100)
         {
             for(density=0;density <= 0.8;density+=0.15)
             {
+                int seed = time(0);
+                srand(seed);
                 contador_global++;
                 unidade = contador_global%10;
                 dezena = (contador_global%100)/10;
                 centena = (contador_global%1000)/100;
+                graph G = esqueletoGrafo(nVertices);
                 preencherGrafo(G, density, maxWeight, 0);
                 to_txt(G,centena,dezena,unidade);
                 //graph_report(G);
