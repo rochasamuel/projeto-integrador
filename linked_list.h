@@ -39,7 +39,11 @@ struct linked_list{
 ptr_cabecalho_LL criarCabecalho(void)
 {
     // Essa função retorna um ponteiro para uma lista ligada de adjacência
-    ptr_cabecalho_LL L = (ptr_cabecalho_LL)malloc(sizeof(*L));  // Alocação de memória
+    ptr_cabecalho_LL L;
+    do
+    {
+        L = (ptr_cabecalho_LL)malloc(sizeof(*L));  // Alocação de memória
+    } while (L == NULL);
     L->number_of_elements = 0;  // Tamanho da lista
     L->sum_of_weights = 0;  // Soma de todos os pesos
     L->id = -1;  // Nome do vértice a que a lista se refere

@@ -289,7 +289,7 @@ int to_txt(graph G,int n1,int n2,int n3)
 graph from_text(void)
 {
     int line;
-    FILE *f = fopen("./grafos_em_txt/300_grafo.txt","r");
+    FILE *f = fopen("./grafos_em_txt/metro_com_tamanho.txt","r");
     //FILE *f = fopen(path,"r");
     if(f == NULL)
     {
