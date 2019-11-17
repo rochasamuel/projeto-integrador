@@ -25,11 +25,11 @@ void main(void)
     int maxWeight;
     float density;
     graph G;
-    for(nVertices = 500; nVertices <=5000; nVertices+= 100)
+    for(nVertices = 500; nVertices <=1000; nVertices+= 100)
     {//graph_report(G);
         for(maxWeight=0;maxWeight<=200;maxWeight+=100)
         {
-            for(density=0.2;density < 0.8;density+=0.05)
+            for(density=0.2;density < 0.81;density+=0.1)
             {
                 
                 contador_global++;
